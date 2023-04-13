@@ -1,4 +1,4 @@
-#include "Position.hpp"
+#include "Types.hpp"
 #include <iostream>
 
 int main() {

@@ -1,4 +1,5 @@
 #include "PositionHandler.hpp"
+#include <iostream>
 
 std::set<square_t> PositionHandler::get_attacked_squares(const position_t& position, color_t color) {
 	std::set<square_t> attacked_squares;
@@ -10,7 +11,7 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 			piece = position.at(square_t(file, rank));
 
 			if (piece != Piece::None || (piece & Color::Mask) != color) {
-				attacked_squares_piece = get_attacked_squares(position, square_t(file, rank), piece);
+				attacked_squares_piece = get_attacked_squares(position, square_t(file, rank));
 				attacked_squares.insert(attacked_squares.begin(), attacked_squares.end());
 			}
 		}
@@ -19,34 +20,40 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 	return attacked_squares;
 }
 
-std::set<square_t> PositionHandler::get_attacked_squares(const position_t& position, square_t square, piece_t piece) {
-	switch (piece) {
-	case Piece::None:
-		return std::set<square_t>();
-		break;
+std::set<square_t> PositionHandler::get_attacked_squares(const position_t& position, square_t square) {
+	piece_t piece = position.at(square);
 
-	case Piece::King:
-		return king.get_attacked_squares(position);
-		break;
+	switch (piece & Piece::Mask) {
+		case Piece::None: {
+			std::set<square_t> empty;
+			return empty;
+		}
 
-	case Piece::Queen:
-		return queen.get_attacked_squares(position);
-		break;
+		case Piece::King: {
+			return king.get_attacked_squares(position, square);
+		}
 
-	case Piece::Bishop:
-		return bishop.get_attacked_squares(position);
-		break;
+		case Piece::Queen: {
+			return queen.get_attacked_squares(position, square);
+		}
 
-	case Piece::Knight:
-		return knight.get_attacked_squares(position);
-		break;
+		case Piece::Bishop: {
+			return bishop.get_attacked_squares(position, square);
+		}
 
-	case Piece::Rook:
-		return rook.get_attacked_squares(position);
-		break;
+		case Piece::Knight: {
+			return knight.get_attacked_squares(position, square);
+		}
 
-	case Piece::Pawn:
-		return pawn.get_attacked_squares(position);
-		break;
+		case Piece::Rook: {
+			return rook.get_attacked_squares(position, square);
+		}
+
+		case Piece::Pawn: {
+			return pawn.get_attacked_squares(position, square);
+		}
+
+		default:
+			throw "panic";
 	}
 }

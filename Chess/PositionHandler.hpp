@@ -16,8 +16,7 @@ private:
 
 public:
 	static std::set<square_t> get_attacked_squares(const position_t& position, color_t color);
-
-	static std::set<square_t> get_attacked_squares(const position_t& position, square_t square, piece_t piece);
+	static std::set<square_t> get_attacked_squares(const position_t& position, square_t square);
 };
 
 #endif

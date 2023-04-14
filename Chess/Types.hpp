@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <cstdint>
+#include <string>
+#include "Debug.hpp"
 
 typedef uint8_t piece_t;
 namespace Piece {
@@ -30,8 +32,8 @@ namespace Color {
 typedef uint8_t index_t;
 struct square_t {
 public:
-	index_t file() { return _file; }
-	index_t rank() { return _rank; }
+	index_t file() const { return _file; }
+	index_t rank() const { return _rank; }
 
 	bool is_on_board() const {
 		return 0 <= _file && _file < 8 && 0 <= _rank && _rank < 8;
@@ -46,6 +48,10 @@ public:
 
 	bool operator<(square_t square) const {
 		return _file < square.file() || _file == square.file() && _rank < square.rank();
+	}
+
+	std::string to_string() const {
+		return "[file: " + std::to_string(_file) + " rank: " + std::to_string(_rank) + "]";
 	}
 
 private:
@@ -64,9 +70,9 @@ namespace MoveType {
 
 struct move_t {
 public:
-	square_t from() { return _from; }
-	square_t to() { return _to; }
-	moveType_t type() { return _type; }
+	square_t from() const { return _from; }
+	square_t to() const { return _to; }
+	moveType_t type() const { return _type; }
 
 	move_t(square_t from, square_t to) 
 		: move_t(from, to, MoveType::Normal) { }
@@ -85,6 +91,14 @@ private:
 	std::vector<piece_t> _pieces;
 	color_t _to_play;
 
+	index_t fromSquare(square_t square) const {
+		return (7 - square.rank()) * 8 + square.file();
+	}
+
+	square_t toSquare(index_t i) const {
+		return square_t(i % 8, i / 8);
+	}
+
 public:
 	position_t(color_t to_play)
 	: _to_play(to_play) {
@@ -98,11 +112,19 @@ public:
 	}
 
 	void place(square_t square, piece_t piece) {
-		throw "not implemented";
+		#if DEBUG
+		if (!square.is_on_board()) { throw "not on board"; }
+		#endif
+
+		_pieces[fromSquare(square)] = piece;
 	}
 
 	piece_t at(square_t square) const {
-		throw "not implemented";
+		#if DEBUG
+		if (!square.is_on_board()) { throw "not on board"; }
+		#endif
+
+		return _pieces[fromSquare(square)];
 	}
 };
 

@@ -101,7 +101,7 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 
 	#if DEBUG
 	if ((bishop & Piece::Mask) != Piece::Bishop || (bishop & Color::Mask) != position.to_play()) {
-		throw "Not queen or wrong color";
+		throw "Not bishop or wrong color";
 	}
 	#endif
 
@@ -114,7 +114,29 @@ std::vector<move_t> Knight::generate_legal_moves(const position_t& position, squ
 }
 
 std::set<square_t> Knight::get_attacked_squares(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t knight = position.at(square);
+	std::set<square_t> attacked_squares;
+
+	#if DEBUG
+	if ((knight & Piece::Mask) != Piece::Knight || (knight & Color::Mask) != position.to_play()) {
+		throw "Not knight or wrong color";
+	}
+	#endif
+
+	for (auto&& direction : _directions) {
+		square_t new_destination = square + direction;
+		if (!new_destination.is_on_board()) {
+			continue;
+		}
+
+		if ((position.at(new_destination) & Color::Mask) == (knight & Color::Mask)) {
+			continue;
+		}
+
+		attacked_squares.emplace(new_destination);
+	}
+
+	return attacked_squares;
 }
 
 
@@ -123,7 +145,16 @@ std::vector<move_t> Rook::generate_legal_moves(const position_t& position, squar
 }
 
 std::set<square_t> Rook::get_attacked_squares(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t rook = position.at(square);
+	std::set<square_t> attacked_squares;
+
+	#if DEBUG
+	if ((rook & Piece::Mask) != Piece::Rook || (rook & Color::Mask) != position.to_play()) {
+		throw "Not rook or wrong color";
+	}
+	#endif
+
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, rook & Color::Mask, square);
 }
 
 

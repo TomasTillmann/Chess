@@ -50,10 +50,18 @@ private:
 	};
 };
 
-class Bishop : public PieceBase {
+class Bishop : public SlidingPiece {
 public:
 	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
 	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+
+private:
+	std::vector<square_t> _directions = {
+		square_t(1,1),
+		square_t(1,-1),
+		square_t(-1,-1),
+		square_t(-1,1),
+	};
 };
 
 class Knight : public PieceBase {

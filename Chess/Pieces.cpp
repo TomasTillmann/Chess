@@ -87,7 +87,7 @@ std::set<square_t> Queen::get_attacked_squares(const position_t& position, squar
 	}
 	#endif
 
-	return SlidingPiece::get_attacked_squares(position, _directions, 8, queen & Color::Mask, square);
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, queen & Color::Mask, square);
 }
 
 
@@ -96,7 +96,16 @@ std::vector<move_t> Bishop::generate_legal_moves(const position_t& position, squ
 }
 
 std::set<square_t> Bishop::get_attacked_squares(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t bishop = position.at(square);
+	std::set<square_t> attacked_squares;
+
+	#if DEBUG
+	if ((bishop & Piece::Mask) != Piece::Bishop || (bishop & Color::Mask) != position.to_play()) {
+		throw "Not queen or wrong color";
+	}
+	#endif
+
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, bishop & Color::Mask, square);
 }
 
 

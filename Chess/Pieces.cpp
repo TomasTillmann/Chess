@@ -10,12 +10,12 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 
 			// not on board
 			if (!new_destination.is_on_board()) {
-				continue;
+				break;
 			}
 
 			// there already is friendly piece
 			if ((position.at(new_destination) & Color::Mask) == friendly_color) {
-				continue;
+				break;
 			}
 
 			attacked_squares.emplace(new_destination);

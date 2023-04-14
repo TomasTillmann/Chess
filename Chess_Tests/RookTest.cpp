@@ -53,14 +53,16 @@ TEST_F(RookTest, get_attacked_squares_friendly_obstacles) {
 	position.place(square_t(4, 6), Piece::Knight | Color::White);
 	position.place(square_t(3, 4), Piece::Rook | Color::White);
 	position.place(square_t(2, 2), Piece::Bishop | Color::White);
-	position.place(square_t(7, 1), Piece::Rook | Color::White);
 
 	std::set<square_t> expected = {
 		square_t(4,5),
+		square_t(4,6),
 
 		square_t(5,4),
 		square_t(6,4),
 		square_t(7,4),
+
+		square_t(3,4),
 
 		square_t(4,3),
 		square_t(4,2),

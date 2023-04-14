@@ -77,12 +77,15 @@ TEST_F(QueenTest, get_attacked_squares_friendly_obstacles) {
 		square_t(4,6),
 		square_t(4,7),
 
+		square_t(5,5),
+
 		square_t(5,4),
 		square_t(6,4),
 		square_t(7,4),
 
 		square_t(5,3),
 		square_t(6,2),
+		square_t(7,1),
 
 		square_t(4,3),
 		square_t(4,2),
@@ -90,6 +93,9 @@ TEST_F(QueenTest, get_attacked_squares_friendly_obstacles) {
 		square_t(4,0),
 
 		square_t(3,3),
+		square_t(2,2),
+
+		square_t(3,4),
 
 		square_t(3,5),
 		square_t(2,6),

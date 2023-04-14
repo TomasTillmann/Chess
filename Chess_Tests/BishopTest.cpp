@@ -57,8 +57,12 @@ TEST_F(BishopTest, get_attacked_squares_friendly_obstacles) {
 	std::set<square_t> expected = {
 		square_t(5,3),
 		square_t(6,2),
+		square_t(7,1),
+
+		square_t(5,5),
 
 		square_t(3,3),
+		square_t(2,2),
 
 		square_t(3,5),
 		square_t(2,6),

@@ -13,12 +13,11 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 				break;
 			}
 
-			// there already is friendly piece
+			attacked_squares.emplace(new_destination);
+
 			if ((position.at(new_destination) & Color::Mask) == friendly_color) {
 				break;
 			}
-
-			attacked_squares.emplace(new_destination);
 		}
 	}
 
@@ -64,8 +63,8 @@ std::set<square_t> King::get_attacked_squares(const position_t& position, square
 	std::set<square_t> attacked_squares;
 
 	#if DEBUG
-	if ((king & Piece::Mask) != Piece::King || (king & Color::Mask) != position.to_play()) {
-		throw "Not king or wrong color";
+	if ((king & Piece::Mask) != Piece::King) {
+		throw "Not king";
 	}
 	#endif
 
@@ -82,8 +81,8 @@ std::set<square_t> Queen::get_attacked_squares(const position_t& position, squar
 	std::set<square_t> attacked_squares;
 
 	#if DEBUG
-	if ((queen & Piece::Mask) != Piece::Queen || (queen & Color::Mask) != position.to_play()) {
-		throw "Not queen or wrong color";
+	if ((queen & Piece::Mask) != Piece::Queen) {
+		throw "Not queen";
 	}
 	#endif
 
@@ -100,8 +99,8 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 	std::set<square_t> attacked_squares;
 
 	#if DEBUG
-	if ((bishop & Piece::Mask) != Piece::Bishop || (bishop & Color::Mask) != position.to_play()) {
-		throw "Not bishop or wrong color";
+	if ((bishop & Piece::Mask) != Piece::Bishop) {
+		throw "Not bishop";
 	}
 	#endif
 
@@ -118,18 +117,14 @@ std::set<square_t> Knight::get_attacked_squares(const position_t& position, squa
 	std::set<square_t> attacked_squares;
 
 	#if DEBUG
-	if ((knight & Piece::Mask) != Piece::Knight || (knight & Color::Mask) != position.to_play()) {
-		throw "Not knight or wrong color";
+	if ((knight & Piece::Mask) != Piece::Knight) {
+		throw "Not knight";
 	}
 	#endif
 
 	for (auto&& direction : _directions) {
 		square_t new_destination = square + direction;
 		if (!new_destination.is_on_board()) {
-			continue;
-		}
-
-		if ((position.at(new_destination) & Color::Mask) == (knight & Color::Mask)) {
 			continue;
 		}
 
@@ -149,8 +144,8 @@ std::set<square_t> Rook::get_attacked_squares(const position_t& position, square
 	std::set<square_t> attacked_squares;
 
 	#if DEBUG
-	if ((rook & Piece::Mask) != Piece::Rook || (rook & Color::Mask) != position.to_play()) {
-		throw "Not rook or wrong color";
+	if ((rook & Piece::Mask) != Piece::Rook) {
+		throw "Not rook";
 	}
 	#endif
 
@@ -163,5 +158,25 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 }
 
 std::set<square_t> Pawn::get_attacked_squares(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t pawn = position.at(square);
+	std::set<square_t> attacked_squares;
+
+	#if DEBUG
+	if ((pawn & Piece::Mask) != Piece::Pawn) {
+		throw "Not pawn";
+	}
+	#endif
+
+	square_t left_attacked = square + square_t(-1, (pawn & Color::Mask) == Color::White ? 1 : -1);
+	square_t right_attacked = square + square_t(1, (pawn & Color::Mask) == Color::White ? 1 : -1);
+
+	if (left_attacked.is_on_board()) {
+		attacked_squares.emplace(left_attacked);
+	}
+
+	if (right_attacked.is_on_board()) {
+		attacked_squares.emplace(right_attacked);
+	}
+
+	return attacked_squares;
 }

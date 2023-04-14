@@ -53,6 +53,8 @@ TEST_F(KnightTest, get_attacked_squares_friendly_obstacles) {
 		square_t(5,2),
 		square_t(3,2),
 		square_t(2,5),
+		square_t(5,6),
+		square_t(2,3),
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);

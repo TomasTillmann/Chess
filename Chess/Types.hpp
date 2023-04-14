@@ -29,7 +29,7 @@ namespace Color {
 	}
 };
 
-typedef uint8_t index_t;
+typedef int8_t index_t;
 struct square_t {
 public:
 	index_t file() const { return _file; }

@@ -1,6 +1,30 @@
 #include "Pieces.hpp"
 #include "PositionHandler.hpp"
 
+std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
+	std::set<square_t> attacked_squares;
+
+	for (auto&& direction : directions) {
+		for (int k = 1; k <= expand_factor; ++k) {
+			square_t new_destination = square + (k * direction);
+
+			// not on board
+			if (!new_destination.is_on_board()) {
+				continue;
+			}
+
+			// there already is friendly piece
+			if ((position.at(new_destination) & Color::Mask) == friendly_color) {
+				continue;
+			}
+
+			attacked_squares.emplace(new_destination);
+		}
+	}
+
+	return attacked_squares;
+}
+
 std::vector<move_t> King::generate_legal_moves(const position_t& position, square_t square) const {
 	piece_t king = position.at(square);
 	std::vector<move_t> legal_moves;
@@ -45,23 +69,7 @@ std::set<square_t> King::get_attacked_squares(const position_t& position, square
 	}
 	#endif
 
-	for (auto&& direction : _directions) {
-		square_t new_destination = square + direction;
-
-		// not on board
-		if (!new_destination.is_on_board()) {
-			continue;
-		}
-
-		// there already is friendly piece
-		if ((position.at(new_destination) & Color::Mask) == (king & Color::Mask)) {
-			continue;
-		}
-
-		attacked_squares.emplace(new_destination);
-	}
-
-	return attacked_squares;
+	return SlidingPiece::get_attacked_squares(position, _directions, 1, king & Color::Mask, square);
 }
 
 
@@ -70,7 +78,16 @@ std::vector<move_t> Queen::generate_legal_moves(const position_t& position, squa
 }
 
 std::set<square_t> Queen::get_attacked_squares(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t queen = position.at(square);
+	std::set<square_t> attacked_squares;
+
+	#if DEBUG
+	if ((queen & Piece::Mask) != Piece::Queen || (queen & Color::Mask) != position.to_play()) {
+		throw "Not queen or wrong color";
+	}
+	#endif
+
+	return SlidingPiece::get_attacked_squares(position, _directions, 8, queen & Color::Mask, square);
 }
 
 

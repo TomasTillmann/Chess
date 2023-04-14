@@ -59,6 +59,10 @@ private:
 	index_t _rank;
 };
 
+static square_t operator *(int k, square_t sq) {
+	return square_t(k * sq.file(), k * sq.rank());
+}
+
 typedef uint8_t moveType_t;
 namespace MoveType {
 	const moveType_t Normal = moveType_t{ 0b00000000 };

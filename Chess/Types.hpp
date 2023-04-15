@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 #include <string>
+#include <format>
 #include "Debug.hpp"
 
 typedef uint8_t piece_t;
@@ -50,6 +51,10 @@ public:
 		return _file < square.file() || _file == square.file() && _rank < square.rank();
 	}
 
+	bool operator ==(square_t square) const {
+		return _file == square.file() && _rank == square.rank();
+	}
+
 	std::string to_string() const {
 		return "[file: " + std::to_string(_file) + " rank: " + std::to_string(_rank) + "]";
 	}
@@ -83,6 +88,14 @@ public:
 
 	move_t(square_t from, square_t to, moveType_t type) 
 		: _from(from), _to(to), _type(type) { }
+
+	bool operator ==(move_t move) const {
+		return _from == move.from() && _to == move.to();
+	}
+
+	std::string to_string() const {
+		return std::format("[{} -> {}]", _from.to_string(), _to.to_string());
+	}
 
 private:
 	square_t _from;

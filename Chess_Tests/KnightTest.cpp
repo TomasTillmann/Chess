@@ -33,7 +33,7 @@ TEST_F(KnightTest, get_attacked_squares_free) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
+	ASSERT_CONTAINER_EQ(expected, actual);
 }
 
 TEST_F(KnightTest, get_attacked_squares_friendly_obstacles) {
@@ -58,6 +58,6 @@ TEST_F(KnightTest, get_attacked_squares_friendly_obstacles) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
+	ASSERT_CONTAINER_EQ(expected, actual);
 
 }

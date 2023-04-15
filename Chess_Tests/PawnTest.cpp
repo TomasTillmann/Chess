@@ -26,7 +26,7 @@ TEST_F(PawnTest, get_attacked_squares_white) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
+	ASSERT_CONTAINER_EQ(expected, actual);
 }
 
 TEST_F(PawnTest, get_attacked_squares_black) {
@@ -41,6 +41,6 @@ TEST_F(PawnTest, get_attacked_squares_black) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
+	ASSERT_CONTAINER_EQ(expected, actual);
 
 }

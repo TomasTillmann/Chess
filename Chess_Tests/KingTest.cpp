@@ -32,7 +32,7 @@ TEST_F(KingTest, get_attacked_squares_free_white) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
+	ASSERT_CONTAINER_EQ(expected, actual);
 }
 
 TEST_F(KingTest, get_attacked_squares_friendly_obstacles_white) {
@@ -53,7 +53,62 @@ TEST_F(KingTest, get_attacked_squares_friendly_obstacles_white) {
 	};
 
 	std::set<square_t> actual = PositionHandler::get_attacked_squares(position, origin);
-	ASSERT_SET_EQ(expected, actual);
-
+	ASSERT_CONTAINER_EQ(expected, actual);
 }
 
+TEST_F(KingTest, get_legal_moves_free) {
+	square_t origin = square_t(4, 4);
+	piece_t wking = Piece::King | Color::White;
+	position.place(origin, wking);
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(4,5)),
+		move_t(origin, square_t(5,5)),
+		move_t(origin, square_t(5,4)),
+		move_t(origin, square_t(5,3)),
+		move_t(origin, square_t(4,3)),
+		move_t(origin, square_t(3,3)),
+		move_t(origin, square_t(3,4)),
+		move_t(origin, square_t(3,5)),
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}
+
+TEST_F(KingTest, get_legal_moves_friendly_obstacles) {
+	square_t origin = square_t(4, 4);
+	piece_t wking = Piece::King | Color::White;
+	position.place(origin, wking);
+	position.place(square_t(5,5), Piece::Bishop | Color::White);
+	position.place(square_t(4,3), Piece::Queen | Color::White);
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(4,5)),
+		move_t(origin, square_t(5,4)),
+		move_t(origin, square_t(5,3)),
+		move_t(origin, square_t(3,3)),
+		move_t(origin, square_t(3,4)),
+		move_t(origin, square_t(3,5)),
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}
+
+TEST_F(KingTest, get_legal_moves_board_side) {
+	square_t origin = square_t(0, 4);
+	piece_t wking = Piece::King | Color::White;
+	position.place(origin, wking);
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(0,5)),
+		move_t(origin, square_t(0,3)),
+		move_t(origin, square_t(1,4)),
+		move_t(origin, square_t(1,5)),
+		move_t(origin, square_t(1,3)),
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}

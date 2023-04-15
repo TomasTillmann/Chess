@@ -22,33 +22,37 @@ std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& positi
 std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& position, square_t square) {
 	piece_t piece = position.at(square);
 
-	switch (piece) {
-	case Piece::None:
-		return std::vector<move_t>();
-		break;
+	switch (piece & Piece::Mask) {
+		case Piece::None: {
+			return std::vector<move_t>();
+		}
 
-	case Piece::King:
-		return king.generate_legal_moves(position, square);
-		break;
+		case Piece::King: {
+			return king.generate_legal_moves(position, square);
+		}
 
-	case Piece::Queen:
-		return queen.generate_legal_moves(position, square);
-		break;
+		case Piece::Queen: {
+			return queen.generate_legal_moves(position, square);
+		}
 
-	case Piece::Bishop:
-		return bishop.generate_legal_moves(position, square);
-		break;
+		case Piece::Bishop: {
+			return bishop.generate_legal_moves(position, square);
+		}
 
-	case Piece::Knight:
-		return knight.generate_legal_moves(position, square);
-		break;
+		case Piece::Knight: {
+			return knight.generate_legal_moves(position, square);
+		}
 
-	case Piece::Rook:
-		return rook.generate_legal_moves(position, square);
-		break;
+		case Piece::Rook: {
+			return rook.generate_legal_moves(position, square);
+		}
 
-	case Piece::Pawn:
-		return pawn.generate_legal_moves(position, square);
-		break;
+		case Piece::Pawn: {
+			return pawn.generate_legal_moves(position, square);
+		}
+
+		default: {
+			throw "panic";
+		}
 	}
 }

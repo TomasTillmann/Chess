@@ -24,13 +24,43 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 	return attacked_squares;
 }
 
+std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
+	std::vector<move_t> legal_moves;
+
+	for (auto&& direction : directions) {
+		for (int k = 1; k <= expand_factor; ++k) {
+			square_t new_destination = square + (k * direction);
+
+			// not on board
+			if (!new_destination.is_on_board()) {
+				break;
+			}
+
+			// there already is friendly piece
+			if ((position.at(new_destination) & Color::Mask) == friendly_color) {
+				break;
+			}
+
+			// can't move to square attacked by enemy's piece 
+			if (PositionHandler::get_attacked_squares(position, Color::op(friendly_color)).contains(new_destination)) {
+				continue;
+			}
+
+			legal_moves.push_back(move_t(square, new_destination));
+		}
+	}
+
+	return legal_moves;
+}
+
+
 std::vector<move_t> King::generate_legal_moves(const position_t& position, square_t square) const {
 	piece_t king = position.at(square);
 	std::vector<move_t> legal_moves;
 
 	#if DEBUG
-	if ((king & Piece::Mask) != Piece::King || (king & Color::Mask) != position.to_play()) {
-		throw "Not king or wrong color";
+	if ((king & Piece::Mask) != Piece::King) {
+		throw "Not king";
 	}
 	#endif
 
@@ -54,6 +84,8 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 
 		legal_moves.push_back(move_t(square, new_destination));
 	}
+
+	// TODO: castles
 
 	return legal_moves;
 }

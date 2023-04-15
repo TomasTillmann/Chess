@@ -112,3 +112,22 @@ TEST_F(KingTest, get_legal_moves_board_side) {
 	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
 	ASSERT_CONTAINER_EQ(expected, actual);
 }
+
+TEST_F(KingTest, get_legal_moves_attacked_squares) {
+	square_t origin = square_t(4, 4);
+	piece_t wking = Piece::King | Color::White;
+	position.place(origin, wking);
+
+	position.place(square_t(3, 0), Piece::Rook | Color::Black);
+	position.place(square_t(7, 3), Piece::Bishop | Color::Black);
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(4,5)),
+		move_t(origin, square_t(5,4)),
+		move_t(origin, square_t(5,3)),
+		move_t(origin, square_t(4,3)),
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}

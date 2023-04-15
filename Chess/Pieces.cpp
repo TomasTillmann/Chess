@@ -1,7 +1,7 @@
 #include "Pieces.hpp"
 #include "PositionHandler.hpp"
 
-std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
+std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const {
 	std::set<square_t> attacked_squares;
 
 	for (auto&& direction : directions) {
@@ -15,7 +15,7 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 
 			attacked_squares.emplace(new_destination);
 
-			if ((position.at(new_destination) & Color::Mask) == friendly_color) {
+			if ((position.at(new_destination) & Piece::Mask) != Piece::None) {
 				break;
 			}
 		}
@@ -100,7 +100,7 @@ std::set<square_t> King::get_attacked_squares(const position_t& position, square
 	}
 	#endif
 
-	return SlidingPiece::get_attacked_squares(position, _directions, 1, king & Color::Mask, square);
+	return SlidingPiece::get_attacked_squares(position, _directions, 1, square);
 }
 
 
@@ -118,7 +118,7 @@ std::set<square_t> Queen::get_attacked_squares(const position_t& position, squar
 	}
 	#endif
 
-	return SlidingPiece::get_attacked_squares(position, _directions, 7, queen & Color::Mask, square);
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, square);
 }
 
 
@@ -136,7 +136,7 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 	}
 	#endif
 
-	return SlidingPiece::get_attacked_squares(position, _directions, 7, bishop & Color::Mask, square);
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, square);
 }
 
 
@@ -181,7 +181,7 @@ std::set<square_t> Rook::get_attacked_squares(const position_t& position, square
 	}
 	#endif
 
-	return SlidingPiece::get_attacked_squares(position, _directions, 7, rook & Color::Mask, square);
+	return SlidingPiece::get_attacked_squares(position, _directions, 7, square);
 }
 
 

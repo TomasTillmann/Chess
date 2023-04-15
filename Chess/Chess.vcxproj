@@ -139,6 +139,7 @@
     <ClCompile Include="Pieces.cpp" />
     <ClCompile Include="PositionHandler.cpp" />
     <ClCompile Include="PositionHandler.hpp" />
+    <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

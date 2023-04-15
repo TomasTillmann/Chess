@@ -10,9 +10,9 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 		for (index_t rank = 0; rank < 8; ++rank) {
 			piece = position.at(square_t(file, rank));
 
-			if (piece != Piece::None || (piece & Color::Mask) != color) {
+			if ((piece & Piece::Mask) != Piece::None && (piece & Color::Mask) == color) {
 				attacked_squares_piece = get_attacked_squares(position, square_t(file, rank));
-				attacked_squares.insert(attacked_squares.begin(), attacked_squares.end());
+				attacked_squares.insert(attacked_squares_piece.begin(), attacked_squares_piece.end());
 			}
 		}
 	}

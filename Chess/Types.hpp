@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <format>
+#include <iostream>
 #include "Debug.hpp"
 
 typedef uint8_t piece_t;
@@ -114,6 +115,13 @@ private:
 
 	square_t toSquare(index_t i) const {
 		return square_t(i % 8, i / 8);
+	}
+
+	std::string to_string() const;
+
+	friend std::ostream& operator <<(std::ostream& os, const position_t& position) {
+		os << position.to_string();
+		return os;
 	}
 
 public:

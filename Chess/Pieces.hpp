@@ -7,11 +7,23 @@
 
 
 class PieceBase {
+public:
+	inline static std::string to_string(piece_t piece) {
+		switch (piece & Piece::Mask) {
+			case Piece::None: return ".";
+			case Piece::King: return (piece & Color::Mask) == Color::White ? "K" : "k";
+			case Piece::Queen: return (piece & Color::Mask) == Color::White ? "Q" : "q";
+			case Piece::Bishop: return (piece & Color::Mask) == Color::White ? "B" : "b";
+			case Piece::Knight: return (piece & Color::Mask) == Color::White ? "K" : "k";
+			case Piece::Rook: return (piece & Color::Mask) == Color::White ? "R" : "r";
+			case Piece::Pawn: return (piece & Color::Mask) == Color::White ? "P" : "p";
+		}
+	}
 };
 
 class SlidingPiece : public PieceBase {
 public:
-	std::set<square_t> get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const;
+	std::set<square_t> get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const;
 	std::vector<move_t> get_legal_moves(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const;
 };
 

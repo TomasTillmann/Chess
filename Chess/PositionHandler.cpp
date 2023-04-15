@@ -57,3 +57,14 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 			throw "panic";
 	}
 }
+
+
+square_t PositionHandler::get_king(const position_t& position, color_t color) {
+	for (index_t i = 0; i < 64; ++i) {
+		if ((position._pieces[i] & Piece::Mask) == Piece::King && (position._pieces[i] & Color::Mask) == color) {
+			return position_t::to_square(i);
+		}
+	}
+
+	return square_t::None;
+}

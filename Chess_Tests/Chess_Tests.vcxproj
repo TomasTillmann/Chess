@@ -47,6 +47,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PositionHandlerTest.cpp" />
+    <ClCompile Include="position_tTest.cpp" />
     <ClCompile Include="QueenTest.cpp" />
     <ClCompile Include="RookTest.cpp" />
     <ClCompile Include="TestUtils.hpp" />

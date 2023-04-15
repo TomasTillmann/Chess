@@ -130,7 +130,7 @@ private:
 	}
 
 	inline static square_t to_square(index_t i) {
-		return square_t(i % 8, i / 8);
+		return square_t(i % 8, 7 - (i / 8));
 	}
 
 	std::string to_string() const;

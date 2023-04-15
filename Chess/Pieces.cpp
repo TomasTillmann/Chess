@@ -48,7 +48,7 @@ std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, co
 				break;
 			}
 
-			// can't make the move if the move releases attack to my king 
+			// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
 			move_t move = move_t(square, new_destination);
 			if (PositionHandler::get_attacked_squares(position.make_move(move), Color::op(friendly_color)).contains(king_destination)) {
 				continue;

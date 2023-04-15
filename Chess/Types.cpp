@@ -15,6 +15,7 @@ std::string position_t::to_string() const {
 
 		row += PieceBase::to_string(_pieces[i]);
 	}
+	pos += row;
 
 	return pos;
 }

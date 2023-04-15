@@ -170,7 +170,39 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 
 
 std::vector<move_t> Knight::generate_legal_moves(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t knight = position.at(square);
+#if DEBUG
+	if ((knight & Piece::Mask) == Piece::Knight) {
+		throw "Not a knight";
+	}
+#endif
+
+	std::vector<move_t> legal_moves;
+	square_t king_destination = PositionHandler::get_king(position, knight & Color::Mask);
+
+	for (auto&& direction : _directions) {
+		square_t new_destination = square + direction;
+
+		// not on board
+		if (!new_destination.is_on_board()) {
+			continue;
+		}
+
+		// there already is friendly piece
+		if ((position.at(new_destination) & Color::Mask) == (knight & Color::Mask)) {
+			continue;
+		}
+
+		// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
+		move_t move = move_t(square, new_destination);
+		if (PositionHandler::get_attacked_squares(position.make_move(move), Color::op(knight & Color::Mask)).contains(king_destination)) {
+			continue;
+		}
+
+		legal_moves.push_back(move);
+	}
+
+	return legal_moves;
 }
 
 std::set<square_t> Knight::get_attacked_squares(const position_t& position, square_t square) const {
@@ -223,7 +255,66 @@ std::set<square_t> Rook::get_attacked_squares(const position_t& position, square
 
 
 std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, square_t square) const {
-	throw "not implemented";
+	piece_t pawn = position.at(square);
+	std::vector<move_t> legal_moves;
+
+	#if DEBUG
+	if ((pawn & Piece::Mask) != Piece::Pawn) {
+		throw "Not pawn";
+	}
+	#endif
+
+	square_t king_loc = PositionHandler::get_king(position, pawn & Color::Mask);
+	int direction = (pawn & Color::Mask) == Color::White ? 1 : -1;
+	index_t starting_rank = (pawn & Color::Mask) == Color::White ? 1 : 6;
+	index_t back_rank = (pawn & Color::Mask) == Color::White ? 7 : 0;
+
+	// move forward
+	move_t move = move_t(square, square + square_t(0, direction * 1));
+	// promotion
+	if (move.to().rank() == back_rank) {
+		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Queen));
+			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Bishop));
+			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Knight));
+			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Rook));
+		}
+	}
+	// one square
+	else if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
+		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+			legal_moves.push_back(move);
+		}
+	}
+
+	// two squares
+	move = move_t(square, square + square_t(0, direction * 2));
+	if (square.rank() == starting_rank && (position.at(move.to()) & Piece::Mask) == Piece::None) {
+		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+			legal_moves.push_back(move);
+		}
+	}
+	//
+
+	// take pieces
+	// right
+	move = move_t(square, square + square_t(1, direction * 1));
+	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
+		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+			legal_moves.push_back(move);
+		}
+	}
+
+	// left
+	move = move_t(square, square + square_t(-1, direction * 1));
+	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
+		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+			legal_moves.push_back(move);
+		}
+	}
+	//
+
+	return legal_moves;
 }
 
 std::set<square_t> Pawn::get_attacked_squares(const position_t& position, square_t square) const {

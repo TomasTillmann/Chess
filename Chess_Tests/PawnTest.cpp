@@ -141,3 +141,20 @@ TEST_F(PawnTest, get_legal_moves_promotion_white) {
 	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
 	ASSERT_CONTAINER_EQ(expected, actual);
 }
+
+TEST_F(PawnTest, get_legal_moves_enpassant_white) {
+	square_t origin = square_t(4, 4);
+	piece_t wpawn = Piece::Pawn | Color::White;
+
+	position.place(origin, wpawn);
+	position.place(square_t(3,6), Piece::Pawn | Color::Black);
+	position = position.make_move(move_t(square_t(3, 6), square_t(3, 4)));
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(3, 5), MoveType::EnPassant),
+		move_t(origin, square_t(4, 5))
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}

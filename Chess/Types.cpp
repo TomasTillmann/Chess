@@ -5,6 +5,8 @@
 
 square_t square_t::None = square_t(-1, -1);
 
+move_t move_t::None = move_t(square_t::None, square_t::None);
+
 position_t position_t::get_starting() {
 	position_t starting_position = position_t(Color::White);
 	starting_position.place(square_t(0, 1), Piece::Pawn | Color::White);
@@ -66,6 +68,7 @@ std::string position_t::to_string() const {
 position_t position_t::make_move(move_t move) const {
 	position_t new_position = position_t(*this);
 	new_position.to_play(Color::op(to_play()));
+	new_position._last_move = move;
 
 	switch (move.type() & MoveType::TypeMask) {
 		case MoveType::Normal: {
@@ -93,6 +96,7 @@ position_t position_t::make_move(move_t move) const {
 			// move the pawn
 			new_position.move(move);
 
+			// remove the taken pawn
 			int k = (at(move.from()) & Color::Mask) == Color::White ? -1 : 1;
 			square_t behind = move.to() + square_t(0, k);
 			new_position.place(behind, Piece::None);

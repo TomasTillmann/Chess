@@ -57,6 +57,10 @@ public:
 		return (_file == square.file()) && (_rank == square.rank());
 	}
 
+	bool operator !=(square_t square) const {
+		return (_file != square.file()) && (_rank != square.rank());
+	}
+
 	static square_t None;
 
 	std::string to_string() const {
@@ -108,6 +112,12 @@ public:
 		return _from == move.from() && _to == move.to();
 	}
 
+	bool operator !=(move_t move) const {
+		return _from != move.from() && _to != move.to();
+	}
+
+	static move_t None;
+
 	std::string to_string() const {
 		return _from.to_string() + _to.to_string();
 	}
@@ -128,6 +138,7 @@ private:
 	std::vector<piece_t> _pieces;
 	color_t _to_play;
 	positionInfo_t _info;
+	move_t _last_move;
 
 	inline static index_t from_square(square_t square) {
 		return (7 - square.rank()) * 8 + square.file();
@@ -179,7 +190,7 @@ public:
 	std::string to_string() const;
 
 	position_t(color_t to_play)
-	: _to_play(to_play), _info() {
+	: _to_play(to_play), _info(), _last_move(move_t::None) {
 		_pieces.resize(64);
 	}
 
@@ -199,6 +210,8 @@ public:
 
 	positionInfo_t info() const { return _info; }
 
+	move_t last_move() const { return _last_move; }
+
 	void add_info(positionInfo_t info) {
 		_info |= info;
 	}
@@ -207,7 +220,9 @@ public:
 
 	void place(square_t square, piece_t piece) {
 		#if DEBUG
-		if (!square.is_on_board()) { throw std::invalid_argument("not on board"); }
+		if (!square.is_on_board()) {
+			throw std::invalid_argument("not on board");
+		}
 		#endif
 
 		_pieces[from_square(square)] = piece;
@@ -215,7 +230,9 @@ public:
 
 	piece_t at(square_t square) const {
 		#if DEBUG
-		if (!square.is_on_board()) { throw std::invalid_argument("not on board"); }
+		if (!square.is_on_board()) {
+			throw std::invalid_argument("not on board");
+		}
 		#endif
 
 		return _pieces[from_square(square)];

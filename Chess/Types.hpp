@@ -4,7 +4,6 @@
 #include <vector>
 #include <cstdint>
 #include <string>
-#include <format>
 #include <iostream>
 #include "Debug.hpp"
 
@@ -43,7 +42,7 @@ public:
 		return 0 <= _file && _file < 8 && 0 <= _rank && _rank < 8;
 	}
 
-	square_t(index_t file, index_t rank) 
+	square_t(index_t file, index_t rank)
 		: _file(file), _rank(rank) { }
 
 	square_t operator +(square_t sq) const {
@@ -51,17 +50,17 @@ public:
 	}
 
 	bool operator<(square_t square) const {
-		return _file < square.file() || _file == square.file() && _rank < square.rank();
+		return (_file < square.file()) || (_file == square.file() && _rank < square.rank());
 	}
 
 	bool operator ==(square_t square) const {
-		return _file == square.file() && _rank == square.rank();
+		return (_file == square.file()) && (_rank == square.rank());
 	}
 
 	static square_t None;
 
 	std::string to_string() const {
-		return "[file: " + std::to_string(_file) + " rank: " + std::to_string(_rank) + "]";
+		return ((char)('a' + _file)) + std::to_string(_rank + 1);
 	}
 
 private:
@@ -69,7 +68,7 @@ private:
 	index_t _rank;
 };
 
-static square_t operator *(int k, square_t sq) {
+inline square_t operator *(int k, square_t sq) {
 	return square_t(k * sq.file(), k * sq.rank());
 }
 
@@ -89,8 +88,8 @@ namespace PositionInfo {
 	const positionInfo_t WRrook_moved = positionInfo_t{ 0b00000010 };
 	const positionInfo_t BLrook_moved = positionInfo_t{ 0b00000100 };
 	const positionInfo_t BRrook_moved = positionInfo_t{ 0b00001000 };
-	const positionInfo_t Wking_moved  = positionInfo_t{ 0b00010000 };
-	const positionInfo_t Bking_moved  = positionInfo_t{ 0b00100000 };
+	const positionInfo_t Wking_moved = positionInfo_t{ 0b00010000 };
+	const positionInfo_t Bking_moved = positionInfo_t{ 0b00100000 };
 };
 
 struct move_t {
@@ -99,10 +98,10 @@ public:
 	square_t to() const { return _to; }
 	moveType_t type() const { return _type; }
 
-	move_t(square_t from, square_t to) 
+	move_t(square_t from, square_t to)
 		: move_t(from, to, MoveType::Normal) { }
 
-	move_t(square_t from, square_t to, moveType_t type) 
+	move_t(square_t from, square_t to, moveType_t type)
 		: _from(from), _to(to), _type(type) { }
 
 	bool operator ==(move_t move) const {
@@ -110,7 +109,12 @@ public:
 	}
 
 	std::string to_string() const {
-		return std::format("[{} -> {}]", _from.to_string(), _to.to_string());
+		return _from.to_string() + _to.to_string();
+	}
+
+	friend std::ostream& operator <<(std::ostream& os, move_t move) {
+		os << move.to_string();
+		return os;
 	}
 
 private:
@@ -123,7 +127,7 @@ struct position_t {
 private:
 	std::vector<piece_t> _pieces;
 	color_t _to_play;
-	positionInfo_t _position_info;
+	positionInfo_t _info;
 
 	inline static index_t from_square(square_t square) {
 		return (7 - square.rank()) * 8 + square.file();
@@ -133,9 +137,30 @@ private:
 		return square_t(i % 8, 7 - (i / 8));
 	}
 
-	std::string to_string() const;
+	void update_info(move_t move) {
+		if (move.from() == square_t(0,0) || move.to() == square_t(0,0)) {
+			_info = _info | PositionInfo::WLrook_moved;
+		}
+		else if (move.from() == square_t(7,0) || move.to() == square_t(7,0)) {
+			_info = _info | PositionInfo::WRrook_moved;
+		}
+		else if (move.from() == square_t(0,7) || move.to() == square_t(0,7)) {
+			_info = _info | PositionInfo::BLrook_moved;
+		}
+		else if (move.from() == square_t(7,7) || move.to() == square_t(7,7)) {
+			_info = _info | PositionInfo::BRrook_moved;
+		}
+		else if (move.from() == square_t(4, 0)) {
+			_info = _info | PositionInfo::Wking_moved;
+		}
+		else if (move.from() == square_t(4, 7)) {
+			_info = _info | PositionInfo::Bking_moved;
+		}
+	}
 
 	void move(move_t move) {
+		update_info(move);
+
 		piece_t piece = at(move.from());
 		place(move.from(), Piece::None);
 		place(move.to(), piece);
@@ -149,8 +174,12 @@ private:
 public:
 	friend PositionHandler;
 
+	static position_t get_starting();
+
+	std::string to_string() const;
+
 	position_t(color_t to_play)
-	: _to_play(to_play), _position_info() {
+	: _to_play(to_play), _info() {
 		_pieces.resize(64);
 	}
 
@@ -166,11 +195,19 @@ public:
 
 	color_t to_play() const { return _to_play; }
 
+	void to_play(color_t color) { _to_play = color; }
+
+	positionInfo_t info() const { return _info; }
+
+	void add_info(positionInfo_t info) {
+		_info |= info;
+	}
+
 	position_t make_move(move_t move) const;
 
 	void place(square_t square, piece_t piece) {
 		#if DEBUG
-		if (!square.is_on_board()) { throw "not on board"; }
+		if (!square.is_on_board()) { throw std::invalid_argument("not on board"); }
 		#endif
 
 		_pieces[from_square(square)] = piece;
@@ -178,10 +215,20 @@ public:
 
 	piece_t at(square_t square) const {
 		#if DEBUG
-		if (!square.is_on_board()) { throw "not on board"; }
+		if (!square.is_on_board()) { throw std::invalid_argument("not on board"); }
 		#endif
 
 		return _pieces[from_square(square)];
+	}
+
+	bool is_check() const;
+
+	bool is_checkmate() const;
+
+	bool is_stalemate() const;
+
+	bool is_over() const {
+		return is_checkmate() || is_stalemate();
 	}
 };
 

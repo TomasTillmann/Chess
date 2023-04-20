@@ -54,7 +54,7 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 		}
 
 		default:
-			throw "panic";
+			throw std::invalid_argument("panic");
 	}
 }
 

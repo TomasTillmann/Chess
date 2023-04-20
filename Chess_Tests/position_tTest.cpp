@@ -15,6 +15,12 @@ protected:
 		position.place(square_t(0, 3), Piece::King | Color::Black);
 		new_position_expected = position_t(position);
 	}
+
+	void clear_pos() {
+		position.place(square_t(0, 1), Piece::None);
+		position.place(square_t(0, 3), Piece::None);
+		new_position_expected = position_t(position);
+	}
 };
 
 TEST_F(Position_tTest, make_move_normal) {
@@ -135,4 +141,14 @@ TEST_F(Position_tTest, make_move_promotion_black) {
 
 	new_position_expected.place(square_t(4, 0), Piece::Bishop | Color::Black);
 	ASSERT_EQ(new_position_expected, new_position_actual);
+}
+
+TEST_F(Position_tTest, is_stalemate) {
+	clear_pos();
+	position.place(square_t(7, 0), Piece::King | Color::White);
+	position.place(square_t(7, 2), Piece::King | Color::Black);
+
+	position.place(square_t(6, 5), Piece::Rook | Color::Black);
+
+	EXPECT_TRUE(position.is_stalemate());
 }

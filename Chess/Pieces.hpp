@@ -14,9 +14,10 @@ public:
 			case Piece::King: return (piece & Color::Mask) == Color::White ? "K" : "k";
 			case Piece::Queen: return (piece & Color::Mask) == Color::White ? "Q" : "q";
 			case Piece::Bishop: return (piece & Color::Mask) == Color::White ? "B" : "b";
-			case Piece::Knight: return (piece & Color::Mask) == Color::White ? "K" : "k";
+			case Piece::Knight: return (piece & Color::Mask) == Color::White ? "N" : "n";
 			case Piece::Rook: return (piece & Color::Mask) == Color::White ? "R" : "r";
 			case Piece::Pawn: return (piece & Color::Mask) == Color::White ? "P" : "p";
+			default: throw std::invalid_argument("panic");
 		}
 	}
 };
@@ -33,6 +34,8 @@ public:
 	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
 
 private:
+	void castling(const position_t& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const;
+
 	std::vector<square_t> _directions = {
 		square_t(0,1),
 		square_t(1,1),

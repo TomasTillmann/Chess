@@ -9,7 +9,7 @@ std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& positi
 		for (index_t rank = 0; rank < 8; ++rank) {
 			piece = position.at(square_t(file, rank));
 
-			if (piece != Piece::None || (piece & Color::Mask) != position.to_play()) {
+			if ((piece & Piece::Mask) != Piece::None && (piece & Color::Mask) == position.to_play()) {
 				legal_moves_piece = generate_legal_moves(position, square_t(file, rank));
 				legal_moves.insert(legal_moves.end(), legal_moves_piece.begin(), legal_moves_piece.end());
 			}
@@ -52,7 +52,7 @@ std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& positi
 		}
 
 		default: {
-			throw "panic";
+			throw std::invalid_argument("Not known piece.");
 		}
 	}
 }

@@ -27,7 +27,7 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
 #if DEBUG
 	if ((position.at(square) & Piece::Mask) == Piece::King) {
-		throw "Even though king is sliding piece, it can't be processed here";
+		throw std::invalid_argument("Even though king is sliding piece, it can't be processed here");
 	}
 #endif
 
@@ -50,7 +50,8 @@ std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, co
 
 			// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
 			move_t move = move_t(square, new_destination);
-			if (PositionHandler::get_attacked_squares(position.make_move(move), Color::op(friendly_color)).contains(king_destination)) {
+			std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(friendly_color));
+			if (attacked_squares.find(king_destination) != attacked_squares.end()) {
 				continue;
 			}
 
@@ -73,7 +74,7 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 
 	#if DEBUG
 	if ((king & Piece::Mask) != Piece::King) {
-		throw "Not king";
+		throw std::invalid_argument("Not king");
 	}
 	#endif
 
@@ -92,16 +93,61 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 		}
 
 		// can't move to square attacked by enemy's piece 
-		if (attacked_squares.contains(new_destination)) {
+		if (attacked_squares.find(new_destination) != attacked_squares.end()) {
 			continue;
 		}
 
 		legal_moves.push_back(move_t(square, new_destination));
 	}
 
-	// TODO: castles
+	castling(position, square, king, legal_moves);
 
 	return legal_moves;
+}
+
+void King::castling(const position_t& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const {
+	positionInfo_t info = position.info();
+	std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position, Color::op(king & Color::Mask));
+
+	if ((king & Color::Mask) == Color::White) {
+		// short castle
+		if (!(info & PositionInfo::Wking_moved) && !(info & PositionInfo::WRrook_moved)) {
+			if ((position.at(square_t(5,0)) & Piece::Mask) == Piece::None && (position.at(square_t(6,0)) & Piece::Mask) == Piece::None) {
+				if (!(attacked_squares.find(square_t(5, 0)) != attacked_squares.end()) && !(attacked_squares.find(square_t(6, 0)) != attacked_squares.end())) {
+					legal_moves.push_back(move_t(square_t(4,0), square_t(6,0)));
+				}
+			}
+		}
+
+		// long castle
+		if (!(info & PositionInfo::Wking_moved) && !(info & PositionInfo::WLrook_moved)) {
+			if ((position.at(square_t(3, 0)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 0)) & Piece::Mask) == Piece::None) {
+				if (!(attacked_squares.find(square_t(3, 0)) != attacked_squares.end()) && !(attacked_squares.find(square_t(2, 0)) != attacked_squares.end())) {
+					legal_moves.push_back(move_t(square_t(4,0), square_t(2,0)));
+				}
+			}
+		}
+	}
+	else {
+		// short castle
+		if (!(info & PositionInfo::Bking_moved) && !(info & PositionInfo::BRrook_moved)) {
+			if ((position.at(square_t(5, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(6, 7)) & Piece::Mask) == Piece::None) {
+				if (!(attacked_squares.find(square_t(5, 7)) != attacked_squares.end()) && !(attacked_squares.find(square_t(6, 7)) != attacked_squares.end())) {
+					legal_moves.push_back(move_t(square_t(4,7), square_t(6,7)));
+				}
+			}
+		}
+
+		// long castle
+		if (!(info & PositionInfo::Bking_moved) && !(info & PositionInfo::BLrook_moved)) {
+
+			if ((position.at(square_t(3, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 7)) & Piece::Mask) == Piece::None) {
+				if (!(attacked_squares.find(square_t(3, 7)) != attacked_squares.end()) && !(attacked_squares.find(square_t(2, 7)) != attacked_squares.end())) {
+					legal_moves.push_back(move_t(square_t(4,7), square_t(2,7)));
+				}
+			}
+		}
+	}
 }
 
 std::set<square_t> King::get_attacked_squares(const position_t& position, square_t square) const {
@@ -109,7 +155,7 @@ std::set<square_t> King::get_attacked_squares(const position_t& position, square
 
 	#if DEBUG
 	if ((king & Piece::Mask) != Piece::King) {
-		throw "Not king";
+		throw std::invalid_argument("Not king");
 	}
 	#endif
 
@@ -122,7 +168,7 @@ std::vector<move_t> Queen::generate_legal_moves(const position_t& position, squa
 
 	#if DEBUG
 	if ((queen & Piece::Mask) != Piece::Queen) {
-		throw "Not queen";
+		throw std::invalid_argument("Not queen");
 	}
 	#endif
 
@@ -135,7 +181,7 @@ std::set<square_t> Queen::get_attacked_squares(const position_t& position, squar
 
 	#if DEBUG
 	if ((queen & Piece::Mask) != Piece::Queen) {
-		throw "Not queen";
+		throw std::invalid_argument("Not queen");
 	}
 	#endif
 
@@ -148,7 +194,7 @@ std::vector<move_t> Bishop::generate_legal_moves(const position_t& position, squ
 
 	#if DEBUG
 	if ((bishop & Piece::Mask) != Piece::Bishop) {
-		throw "Not bishop";
+		throw std::invalid_argument("Not bishop");
 	}
 	#endif
 
@@ -161,7 +207,7 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 
 	#if DEBUG
 	if ((bishop & Piece::Mask) != Piece::Bishop) {
-		throw "Not bishop";
+		throw std::invalid_argument("Not bishop");
 	}
 	#endif
 
@@ -172,8 +218,8 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 std::vector<move_t> Knight::generate_legal_moves(const position_t& position, square_t square) const {
 	piece_t knight = position.at(square);
 #if DEBUG
-	if ((knight & Piece::Mask) == Piece::Knight) {
-		throw "Not a knight";
+	if ((knight & Piece::Mask) != Piece::Knight) {
+		throw std::invalid_argument("Not a knight");
 	}
 #endif
 
@@ -195,7 +241,8 @@ std::vector<move_t> Knight::generate_legal_moves(const position_t& position, squ
 
 		// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
 		move_t move = move_t(square, new_destination);
-		if (PositionHandler::get_attacked_squares(position.make_move(move), Color::op(knight & Color::Mask)).contains(king_destination)) {
+		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(knight & Color::Mask));
+		if (attacked_squares.find(king_destination) != attacked_squares.end()) {
 			continue;
 		}
 
@@ -211,7 +258,7 @@ std::set<square_t> Knight::get_attacked_squares(const position_t& position, squa
 
 	#if DEBUG
 	if ((knight & Piece::Mask) != Piece::Knight) {
-		throw "Not knight";
+		throw std::invalid_argument("Not knight");
 	}
 	#endif
 
@@ -233,7 +280,7 @@ std::vector<move_t> Rook::generate_legal_moves(const position_t& position, squar
 
 	#if DEBUG
 	if ((rook & Piece::Mask) != Piece::Rook) {
-		throw "Not rook";
+		throw std::invalid_argument("Not rook");
 	}
 	#endif
 
@@ -246,7 +293,7 @@ std::set<square_t> Rook::get_attacked_squares(const position_t& position, square
 
 	#if DEBUG
 	if ((rook & Piece::Mask) != Piece::Rook) {
-		throw "Not rook";
+		throw std::invalid_argument("Not rook");
 	}
 	#endif
 
@@ -260,7 +307,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 
 	#if DEBUG
 	if ((pawn & Piece::Mask) != Piece::Pawn) {
-		throw "Not pawn";
+		throw std::invalid_argument("Not pawn");
 	}
 	#endif
 
@@ -268,12 +315,14 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	int direction = (pawn & Color::Mask) == Color::White ? 1 : -1;
 	index_t starting_rank = (pawn & Color::Mask) == Color::White ? 1 : 6;
 	index_t back_rank = (pawn & Color::Mask) == Color::White ? 7 : 0;
+	std::set<square_t> attacked_squares;
 
 	// move forward
 	move_t move = move_t(square, square + square_t(0, direction * 1));
 	// promotion
 	if (move.to().rank() == back_rank) {
-		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Queen));
 			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Bishop));
 			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Knight));
@@ -282,25 +331,27 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	}
 	// one square
 	else if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
-		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move);
 		}
-	}
 
-	// two squares
-	move = move_t(square, square + square_t(0, direction * 2));
-	if (square.rank() == starting_rank && (position.at(move.to()) & Piece::Mask) == Piece::None) {
-		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
-			legal_moves.push_back(move);
+		// two squares
+		move = move_t(square, square + square_t(0, direction * 2));
+		if (square.rank() == starting_rank && (position.at(move.to()) & Piece::Mask) == Piece::None) {
+			attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+			if (attacked_squares.find(king_loc) == attacked_squares.end()) {
+				legal_moves.push_back(move);
+			}
 		}
+		//
 	}
-	//
 
 	// take pieces
 	// right
 	move = move_t(square, square + square_t(1, direction * 1));
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
-		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move);
 		}
 	}
@@ -308,7 +359,8 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	// left
 	move = move_t(square, square + square_t(-1, direction * 1));
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
-		if (!PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask)).contains(king_loc)) {
+		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move);
 		}
 	}
@@ -323,7 +375,7 @@ std::set<square_t> Pawn::get_attacked_squares(const position_t& position, square
 
 	#if DEBUG
 	if ((pawn & Piece::Mask) != Piece::Pawn) {
-		throw "Not pawn";
+		throw std::invalid_argument("Not pawn");
 	}
 	#endif
 

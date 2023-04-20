@@ -60,6 +60,7 @@ TEST_F(KingTest, get_legal_moves_free) {
 	square_t origin = square_t(4, 4);
 	piece_t wking = Piece::King | Color::White;
 	position.place(origin, wking);
+	position.add_info(PositionInfo::Wking_moved);
 
 	std::vector<move_t> expected = {
 		move_t(origin, square_t(4,5)),
@@ -82,6 +83,7 @@ TEST_F(KingTest, get_legal_moves_friendly_obstacles) {
 	position.place(origin, wking);
 	position.place(square_t(5,5), Piece::Bishop | Color::White);
 	position.place(square_t(4,3), Piece::Queen | Color::White);
+	position.add_info(PositionInfo::Wking_moved);
 
 	std::vector<move_t> expected = {
 		move_t(origin, square_t(4,5)),
@@ -100,6 +102,7 @@ TEST_F(KingTest, get_legal_moves_board_side) {
 	square_t origin = square_t(0, 4);
 	piece_t wking = Piece::King | Color::White;
 	position.place(origin, wking);
+	position.add_info(PositionInfo::Wking_moved);
 
 	std::vector<move_t> expected = {
 		move_t(origin, square_t(0,5)),
@@ -126,6 +129,23 @@ TEST_F(KingTest, get_legal_moves_attacked_squares) {
 		move_t(origin, square_t(5,4)),
 		move_t(origin, square_t(5,3)),
 		move_t(origin, square_t(4,3)),
+	};
+
+	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);
+	ASSERT_CONTAINER_EQ(expected, actual);
+}
+
+TEST_F(KingTest, get_legal_moves_castling) {
+	square_t origin = square_t(4, 0);
+	piece_t wking = Piece::King | Color::White;
+	position.place(origin, wking);
+
+	position.place(square_t(0, 0), Piece::Rook | Color::White);
+	position.place(square_t(7, 0), Piece::Rook | Color::White);
+
+	std::vector<move_t> expected = {
+		move_t(origin, square_t(6,0), MoveType::Castle),
+		move_t(origin, square_t(2,0), MoveType::Castle),
 	};
 
 	std::vector<move_t> actual = MoveGenerator::generate_legal_moves(position, origin);

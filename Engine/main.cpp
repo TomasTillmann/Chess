@@ -38,11 +38,14 @@ int perft(const position_t& position, int depth) {
 int main(int argc, char** argv) {
 	std::vector<std::string> args = std::vector<std::string>(argv + 1, argv + argc);
 	int depth = stoi(args[0]);
+	//int depth = 1;
 
 	position_t position = position_t::get_starting();
 	//position = position
-	//	.make_move(move_t(square_t(1, 0), square_t(0,2)))
-	//	.make_move(move_t(square_t(0, 6), square_t(0,5)));
+		//.make_move(move_t(square_t(1, 0), square_t(0, 2)))
+		//.make_move(move_t(square_t(2, 6), square_t(2,5)))
+		//.make_move(move_t(square_t(1, 1), square_t(1,2)))
+		//.make_move(move_t(square_t(3, 7), square_t(0,4)));
 
 	std::cout << position << std::endl << std::endl;
 

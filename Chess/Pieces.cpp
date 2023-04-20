@@ -331,6 +331,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	}
 	// one square
 	else if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
+		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move);
 		}

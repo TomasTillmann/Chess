@@ -80,8 +80,6 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 
 	for (auto&& direction : _directions) {
 		square_t new_destination = square + direction;
-		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position, Color::op(king & Color::Mask));
-
 		// not on board
 		if (!new_destination.is_on_board()) {
 			continue;
@@ -92,6 +90,7 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 			continue;
 		}
 
+		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move_t(square, new_destination)), Color::op(king & Color::Mask));
 		// can't move to square attacked by enemy's piece 
 		if (attacked_squares.find(new_destination) != attacked_squares.end()) {
 			continue;
@@ -106,6 +105,12 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 }
 
 void King::castling(const position_t& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const {
+	// can't castle when in check
+	if (position.is_check())
+	{
+		return;
+	}
+
 	positionInfo_t info = position.info();
 	std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position, Color::op(king & Color::Mask));
 
@@ -369,45 +374,23 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 
 	// en passant
 	move_t last_move = position.last_move();
-	if (last_move != move_t::None)
+	index_t op_starting_rank = 7 - starting_rank;
+	index_t possible_en_passant_rank = op_starting_rank + (-direction * 2);
+
+	if ((last_move != move_t::None && (position.at(last_move.to()) & Piece::Mask) == Piece::Pawn)
+		&& (square.rank() == possible_en_passant_rank && last_move.to().rank() == possible_en_passant_rank)
+		&& (last_move.from().rank() == op_starting_rank)
+		&& (std::abs(last_move.to().file() - square.file()) == 1))
 	{
-		index_t op_starting_rank = 7 - starting_rank;
+		index_t behind = last_move.to().rank() + direction;
+		move = move_t(square, square_t(last_move.to().file(), behind), MoveType::EnPassant);
 
-		// if there could be pawn on left
-		if (square.file() != 0) {
-			piece_t left_of = position.at(square_t(square.file() - 1, square.rank()));
-			// opposite color pawn on the left
-			if ((left_of & Piece::Mask) == Piece::Pawn && (left_of & Color::Mask) == Color::op(pawn & Color::Mask)) {
-				// if moved from starting rank by 2 squares
-				if (last_move.from().rank() == op_starting_rank && last_move.from().file() == square.file() - 1
-					&& last_move.to().rank() == square.rank()) {
-					move = move_t(square, square_t(square.file() - 1, square.rank() + direction), MoveType::EnPassant);
-					attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
-					if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-						legal_moves.push_back(move);
-					}
-				}
-			}
+		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
+			legal_moves.push_back(move);
 		}
-
-		// if there could be pawn on the right
-		if (square.file() != 7) {
-			piece_t right_of = position.at(square_t(square.file() + 1, square.rank()));
-			// opposite color pawn on the right
-			if ((right_of & Piece::Mask) == Piece::Pawn && (right_of & Color::Mask) == Color::op(pawn & Color::Mask)) {
-				// if moved from starting rank by 2 squares
-				if (last_move.from().rank() == op_starting_rank && last_move.from().file() == square.file() + 1
-					&& last_move.to().rank() == square.rank()) {
-					move = move_t(square, square_t(square.file() + 1, square.rank() + direction), MoveType::EnPassant);
-					attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
-					if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-						legal_moves.push_back(move);
-					}
-				}
-			}
-		}
-		//
 	}
+	//
 
 	return legal_moves;
 }

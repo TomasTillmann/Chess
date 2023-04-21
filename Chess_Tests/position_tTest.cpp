@@ -149,6 +149,7 @@ TEST_F(Position_tTest, is_stalemate) {
 	position.place(square_t(7, 2), Piece::King | Color::Black);
 
 	position.place(square_t(6, 5), Piece::Rook | Color::Black);
+	position.add_info(PositionInfo::Wking_moved);
 
 	EXPECT_TRUE(position.is_stalemate());
 }

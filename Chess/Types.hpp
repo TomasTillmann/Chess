@@ -63,6 +63,28 @@ public:
 
 	static square_t None;
 
+	inline static square_t h(const std::string &sq_human_notation)
+	{
+		if (sq_human_notation.size() != 2) {
+			throw std::invalid_argument("wrong length of sq_human_notation: " + sq_human_notation);
+		}
+
+		index_t file, rank;
+		file = sq_human_notation[0] - 'a';
+
+		if (!(0 <= file && file <= 7)) {
+			throw std::invalid_argument("file is invalid: " + sq_human_notation[0]);
+		}
+
+		rank = (int)(sq_human_notation[1] - '1');
+
+		if (!(0 <= rank && rank <= 7)) {
+			throw std::invalid_argument("rank is invalid: " + sq_human_notation[1]);
+		}
+
+		return square_t(file, rank);
+	}
+
 	std::string to_string() const {
 		return ((char)('a' + _file)) + std::to_string(_rank + 1);
 	}
@@ -117,6 +139,18 @@ public:
 	}
 
 	static move_t None;
+
+	inline static move_t h(const std::string &move_human_readable)
+	{
+		if (move_human_readable.size() != 4) {
+			throw std::invalid_argument("wrong length of human_raedable_move: " + move_human_readable);
+		}
+
+		square_t from = square_t::h(move_human_readable.substr(0, 2));
+		square_t to = square_t::h(move_human_readable.substr(2, 2));
+
+		return move_t(from, to);
+	}
 
 	std::string to_string() const {
 		return _from.to_string() + _to.to_string();

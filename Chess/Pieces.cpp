@@ -52,6 +52,11 @@ std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, co
 			move_t move = move_t(square, new_destination);
 			std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(friendly_color));
 			if (attacked_squares.find(king_destination) != attacked_squares.end()) {
+				// will capture enemy piece -> sliding piece can't move further.
+				if ((position.at(new_destination) & Color::Mask) == Color::op(friendly_color)) {
+					break;
+				}
+
 				continue;
 			}
 
@@ -119,16 +124,16 @@ void King::castling(const position_t& position, square_t square, piece_t king, s
 		if (!(info & PositionInfo::Wking_moved) && !(info & PositionInfo::WRrook_moved)) {
 			if ((position.at(square_t(5,0)) & Piece::Mask) == Piece::None && (position.at(square_t(6,0)) & Piece::Mask) == Piece::None) {
 				if (!(attacked_squares.find(square_t(5, 0)) != attacked_squares.end()) && !(attacked_squares.find(square_t(6, 0)) != attacked_squares.end())) {
-					legal_moves.push_back(move_t(square_t(4,0), square_t(6,0)));
+					legal_moves.push_back(move_t(square_t(4,0), square_t(6,0), MoveType::Castle));
 				}
 			}
 		}
 
 		// long castle
 		if (!(info & PositionInfo::Wking_moved) && !(info & PositionInfo::WLrook_moved)) {
-			if ((position.at(square_t(3, 0)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 0)) & Piece::Mask) == Piece::None) {
+			if ((position.at(square_t(3, 0)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 0)) & Piece::Mask) == Piece::None && (position.at(square_t(1, 0)) & Piece::Mask) == Piece::None) {
 				if (!(attacked_squares.find(square_t(3, 0)) != attacked_squares.end()) && !(attacked_squares.find(square_t(2, 0)) != attacked_squares.end())) {
-					legal_moves.push_back(move_t(square_t(4,0), square_t(2,0)));
+					legal_moves.push_back(move_t(square_t(4,0), square_t(2,0), MoveType::Castle));
 				}
 			}
 		}
@@ -138,7 +143,7 @@ void King::castling(const position_t& position, square_t square, piece_t king, s
 		if (!(info & PositionInfo::Bking_moved) && !(info & PositionInfo::BRrook_moved)) {
 			if ((position.at(square_t(5, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(6, 7)) & Piece::Mask) == Piece::None) {
 				if (!(attacked_squares.find(square_t(5, 7)) != attacked_squares.end()) && !(attacked_squares.find(square_t(6, 7)) != attacked_squares.end())) {
-					legal_moves.push_back(move_t(square_t(4,7), square_t(6,7)));
+					legal_moves.push_back(move_t(square_t(4,7), square_t(6,7), MoveType::Castle));
 				}
 			}
 		}
@@ -146,9 +151,9 @@ void King::castling(const position_t& position, square_t square, piece_t king, s
 		// long castle
 		if (!(info & PositionInfo::Bking_moved) && !(info & PositionInfo::BLrook_moved)) {
 
-			if ((position.at(square_t(3, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 7)) & Piece::Mask) == Piece::None) {
+			if ((position.at(square_t(3, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(2, 7)) & Piece::Mask) == Piece::None && (position.at(square_t(1, 7)) & Piece::Mask) == Piece::None) {
 				if (!(attacked_squares.find(square_t(3, 7)) != attacked_squares.end()) && !(attacked_squares.find(square_t(2, 7)) != attacked_squares.end())) {
-					legal_moves.push_back(move_t(square_t(4,7), square_t(2,7)));
+					legal_moves.push_back(move_t(square_t(4,7), square_t(2,7), MoveType::Castle));
 				}
 			}
 		}
@@ -324,21 +329,17 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 
 	// move forward
 	move_t move = move_t(square, square + square_t(0, direction * 1));
-	// promotion
-	if (move.to().rank() == back_rank) {
-		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
-		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Queen));
-			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Bishop));
-			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Knight));
-			legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Rook));
-		}
-	}
+
 	// one square
-	else if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
+	if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
 		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-			legal_moves.push_back(move);
+			if (move.to().rank() == back_rank) {
+				add_promotion_moves(move, legal_moves);
+			}
+			else {
+				legal_moves.push_back(move);
+			}
 		}
 
 		// two squares
@@ -358,7 +359,12 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
 		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-			legal_moves.push_back(move);
+			if (move.to().rank() == back_rank) {
+				add_promotion_moves(move, legal_moves);
+			}
+			else {
+				legal_moves.push_back(move);
+			}
 		}
 	}
 
@@ -367,7 +373,12 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
 		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
-			legal_moves.push_back(move);
+			if (move.to().rank() == back_rank) {
+				add_promotion_moves(move, legal_moves);
+			}
+			else {
+				legal_moves.push_back(move);
+			}
 		}
 	}
 	//
@@ -417,4 +428,11 @@ std::set<square_t> Pawn::get_attacked_squares(const position_t& position, square
 	}
 
 	return attacked_squares;
+}
+
+void Pawn::add_promotion_moves(move_t move, std::vector<move_t> &legal_moves) const {
+	legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Queen));
+	legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Bishop));
+	legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Knight));
+	legal_moves.push_back(move_t(move.from(), move.to(), MoveType::Promotion | Piece::Rook));
 }

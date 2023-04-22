@@ -116,6 +116,9 @@ class Pawn : public PieceBase {
 public:
 	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
 	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+
+private:
+	void add_promotion_moves(move_t move, std::vector<move_t>& legal_moves) const;
 };
 
 #endif

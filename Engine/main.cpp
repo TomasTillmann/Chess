@@ -3,6 +3,7 @@
 #include <vector>
 
 position_t position3 = position_t(Color::White);
+position_t position2 = position_t(Color::White);
 
 void setup_position3()
 {
@@ -20,6 +21,43 @@ void setup_position3()
 
 	position3.add_info(PositionInfo::Wking_moved);
 	position3.add_info(PositionInfo::Bking_moved);
+}
+
+void position2_setup()
+{
+	position2.place(square_t::h("a2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("b2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("c2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("d5"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("e4"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("f2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("g2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("h2"), Piece::Pawn | Color::White);
+	position2.place(square_t::h("a1"), Piece::Rook | Color::White);
+	position2.place(square_t::h("c3"), Piece::Knight | Color::White);
+	position2.place(square_t::h("d2"), Piece::Bishop | Color::White);
+	position2.place(square_t::h("e2"), Piece::Bishop | Color::White);
+	position2.place(square_t::h("e5"), Piece::Knight | Color::White);
+	position2.place(square_t::h("f3"), Piece::Queen | Color::White);
+	position2.place(square_t::h("e1"), Piece::King | Color::White);
+	position2.place(square_t::h("h1"), Piece::Rook | Color::White);
+
+	position2.place(square_t::h("a7"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("b4"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("c7"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("d7"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("e6"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("f7"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("g6"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("h3"), Piece::Pawn | Color::Black);
+	position2.place(square_t::h("a8"), Piece::Rook | Color::Black);
+	position2.place(square_t::h("a6"), Piece::Bishop | Color::Black);
+	position2.place(square_t::h("b6"), Piece::Knight | Color::Black);
+	position2.place(square_t::h("e7"), Piece::Queen | Color::Black);
+	position2.place(square_t::h("e8"), Piece::King | Color::Black);
+	position2.place(square_t::h("f6"), Piece::Knight | Color::Black);
+	position2.place(square_t::h("g7"), Piece::Bishop | Color::Black);
+	position2.place(square_t::h("h8"), Piece::Rook | Color::Black);
 }
 
 int perft_rec(const position_t& position, int depth) {
@@ -57,13 +95,21 @@ int perft(const position_t& position, int depth) {
 
 int main(int argc, char** argv) {
 	setup_position3();
-	position3 = position3.make_move(move_t::h("g2g4"));
-	//position3 = position3.make_move(move_t::h("f4f3"));
-	//position3 = position3.make_move(move_t::h("g2g3"));
+	position3 = position3.make_move(move_t::h("a5a6"));
+	position3 = position3.make_move(move_t::h("d6d5"));
+	position3 = position3.make_move(move_t::h("b4d4"));
+	position3 = position3.make_move(move_t::h("h5h6"));
 
-	//std::vector<std::string> args = std::vector<std::string>(argv + 1, argv + argc);
-	//int depth = stoi(args[0]);
+	position2_setup();
+	position2= position2.make_move(move_t::h("e1g1", MoveType::Castle));
+	position2= position2.make_move(move_t::h("b4b3"));
+
+	std::vector<std::string> args = std::vector<std::string>(argv + 1, argv + argc);
 	int depth = 1;
+
+	if (args.size() != 0) {
+		depth = stoi(args[0]);
+	}
 
 	//position_t position = position_t::get_starting();
 
@@ -73,9 +119,9 @@ int main(int argc, char** argv) {
 	//	.make_move(move_t(square_t(4, 0), square_t(3, 1)))
 	//	.make_move(move_t(square_t(3, 7), square_t(0,4)));
 
-	std::cout << position3 << std::endl << std::endl;
+	std::cout << position2 << std::endl << std::endl;
 
-	std::size_t count = perft(position3, depth);
+	std::size_t count = perft(position2, depth);
 	std::cout << "depth " << depth << ": " << count << std::endl;
 	std::cout << std::endl;
 }

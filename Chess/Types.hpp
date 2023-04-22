@@ -140,7 +140,7 @@ public:
 
 	static move_t None;
 
-	inline static move_t h(const std::string &move_human_readable)
+	inline static move_t h(const std::string &move_human_readable, moveType_t move_type)
 	{
 		if (move_human_readable.size() != 4) {
 			throw std::invalid_argument("wrong length of human_raedable_move: " + move_human_readable);
@@ -149,7 +149,11 @@ public:
 		square_t from = square_t::h(move_human_readable.substr(0, 2));
 		square_t to = square_t::h(move_human_readable.substr(2, 2));
 
-		return move_t(from, to);
+		return move_t(from, to, move_type);
+	}
+
+	inline static move_t h(const std::string& move_human_readable) {
+		return h(move_human_readable, MoveType::Normal);
 	}
 
 	std::string to_string() const {

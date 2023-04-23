@@ -91,7 +91,9 @@ public:
 		_info |= info;
 	}
 
-	Position make_move(move_t move) const;
+	Position cmake_move(move_t move) const;
+
+	void make_move(move_t move);
 
 	void place(square_t square, piece_t piece) {
 #if DEBUG

@@ -148,7 +148,7 @@ TEST_F(PawnTest, get_legal_moves_enpassant_white) {
 
 	position.place(origin, wpawn);
 	position.place(square_t(3,6), Piece::Pawn | Color::Black);
-	position = position.make_move(move_t(square_t(3, 6), square_t(3, 4)));
+	position = position.cmake_move(move_t(square_t(3, 6), square_t(3, 4)));
 
 	std::vector<move_t> expected = {
 		move_t(origin, square_t(3, 5), MoveType::EnPassant),

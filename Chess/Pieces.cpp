@@ -50,7 +50,7 @@ std::vector<move_t> SlidingPiece::get_legal_moves(const Position& position, cons
 
 			// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
 			move_t move = move_t(square, new_destination);
-			std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(friendly_color));
+			std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(friendly_color));
 			if (attacked_squares.find(king_destination) != attacked_squares.end()) {
 				// will capture enemy piece -> sliding piece can't move further.
 				if ((position.at(new_destination) & Color::Mask) == Color::op(friendly_color)) {
@@ -95,7 +95,7 @@ std::vector<move_t> King::generate_legal_moves(const Position& position, square_
 			continue;
 		}
 
-		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move_t(square, new_destination)), Color::op(king & Color::Mask));
+		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move_t(square, new_destination)), Color::op(king & Color::Mask));
 		// can't move to square attacked by enemy's piece 
 		if (attacked_squares.find(new_destination) != attacked_squares.end()) {
 			continue;
@@ -251,7 +251,7 @@ std::vector<move_t> Knight::generate_legal_moves(const Position& position, squar
 
 		// can't make the move if the move releases attack to my king or doesn't capture or interfere checking piece
 		move_t move = move_t(square, new_destination);
-		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(knight & Color::Mask));
+		std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(knight & Color::Mask));
 		if (attacked_squares.find(king_destination) != attacked_squares.end()) {
 			continue;
 		}
@@ -332,7 +332,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_
 
 	// one square
 	if ((position.at(move.to()) & Piece::Mask) == Piece::None) {
-		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			if (move.to().rank() == back_rank) {
 				add_promotion_moves(move, legal_moves);
@@ -345,7 +345,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_
 		// two squares
 		move = move_t(square, square + square_t(0, direction * 2));
 		if (square.rank() == starting_rank && (position.at(move.to()) & Piece::Mask) == Piece::None) {
-			attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+			attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(pawn & Color::Mask));
 			if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 				legal_moves.push_back(move);
 			}
@@ -357,7 +357,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_
 	// right
 	move = move_t(square, square + square_t(1, direction));
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
-		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			if (move.to().rank() == back_rank) {
 				add_promotion_moves(move, legal_moves);
@@ -371,7 +371,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_
 	// left
 	move = move_t(square, square + square_t(-1, direction));
 	if (move.to().is_on_board() && (position.at(move.to()) & Color::Mask) == Color::op(pawn & Color::Mask)) {
-		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			if (move.to().rank() == back_rank) {
 				add_promotion_moves(move, legal_moves);
@@ -396,7 +396,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_
 		index_t behind = last_move.to().rank() + direction;
 		move = move_t(square, square_t(last_move.to().file(), behind), MoveType::EnPassant);
 
-		attacked_squares = PositionHandler::get_attacked_squares(position.make_move(move), Color::op(pawn & Color::Mask));
+		attacked_squares = PositionHandler::get_attacked_squares(position.cmake_move(move), Color::op(pawn & Color::Mask));
 		if (attacked_squares.find(king_loc) == attacked_squares.end()) {
 			legal_moves.push_back(move);
 		}

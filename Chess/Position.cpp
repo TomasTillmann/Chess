@@ -61,59 +61,65 @@ std::string Position::to_string() const {
 	return pos;
 }
 
-Position Position::make_move(move_t move) const {
+Position Position::cmake_move(move_t move) const {
 	Position new_position = Position(*this);
-	new_position.to_play(Color::op(to_play()));
-	new_position._last_move = move;
+	auto str = new_position.to_string();
+	new_position.make_move(move);
+	return new_position;
+}
+
+void Position::make_move(move_t move) {
+	to_play(Color::op(to_play()));
+	_last_move = move;
 
 	switch (move.type() & MoveType::TypeMask) {
 	case MoveType::Normal: {
-		new_position.move(move);
+		this->move(move);
 		break;
 	}
 
 	case MoveType::Castle: {
 		// move the king
-		new_position.move(move);
+		this->move(move);
 
 		// short castle
 		if (move.to().file() == 6) {
-			new_position.move(move_t(square_t(7, move.to().rank()), square_t(5, move.to().rank())));
+			this->move(move_t(square_t(7, move.to().rank()), square_t(5, move.to().rank())));
 		}
 		// long castle
 		else {
-			new_position.move(move_t(square_t(0, move.to().rank()), square_t(3, move.to().rank())));
+			this->move(move_t(square_t(0, move.to().rank()), square_t(3, move.to().rank())));
 		}
 
 		break;
 	}
 
 	case MoveType::EnPassant: {
+		// where is behind
+		int k = (at(move.from()) & Color::Mask) == Color::White ? -1 : 1;
+
 		// move the pawn
-		new_position.move(move);
+		this->move(move);
 
 		// remove the taken pawn
-		int k = (at(move.from()) & Color::Mask) == Color::White ? -1 : 1;
 		square_t behind = move.to() + square_t(0, k);
-		new_position.place(behind, Piece::None);
+		this->place(behind, Piece::None);
 
 		break;
 	}
 
 	case MoveType::Promotion: {
 		piece_t piece_to_promote = (move.type() & Piece::Mask) | (at(move.from()) & Color::Mask);
-		new_position.move(move);
-		new_position.place(move.to(), piece_to_promote);
+		this->move(move);
+		this->place(move.to(), piece_to_promote);
 
 		break;
 	}
 
 	default: {
-		throw std::invalid_argument("panic");
+		throw std::invalid_argument("panic-nonexistent move type");
 	}
 	}
-
-	return new_position;
 }
 
 bool Position::is_check() const {

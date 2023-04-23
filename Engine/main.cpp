@@ -72,7 +72,7 @@ int perft_rec(const Position& position, int depth) {
 	std::size_t count;
 
 	for (auto&& move : legal_moves) {
-		count = perft_rec(position.make_move(move), depth - 1);
+		count = perft_rec(position.cmake_move(move), depth - 1);
 		sum += count;
 	}
 
@@ -85,7 +85,7 @@ int perft(const Position& position, int depth) {
 	std::size_t count;
 
 	for (auto&& move : legal_moves) {
-		count = perft_rec(position.make_move(move), depth - 1);
+		count = perft_rec(position.cmake_move(move), depth - 1);
 		sum += count;
 		std::cout << move << ": " << count << std::endl;
 	}
@@ -95,14 +95,14 @@ int perft(const Position& position, int depth) {
 
 int main(int argc, char** argv) {
 	setup_position3();
-	position3 = position3.make_move(move_t::h("a5a6"));
-	position3 = position3.make_move(move_t::h("d6d5"));
-	position3 = position3.make_move(move_t::h("b4d4"));
-	position3 = position3.make_move(move_t::h("h5h6"));
+	position3.make_move(move_t::h("a5a6"));
+	position3.make_move(move_t::h("d6d5"));
+	position3.make_move(move_t::h("b4d4"));
+	position3.make_move(move_t::h("h5h6"));
 
 	position2_setup();
-	position2= position2.make_move(move_t::h("e1g1", MoveType::Castle));
-	position2= position2.make_move(move_t::h("b4b3"));
+	position2.make_move(move_t::h("e1g1", MoveType::Castle));
+	position2.make_move(move_t::h("b4b3"));
 
 	std::vector<std::string> args = std::vector<std::string>(argv + 1, argv + argc);
 	int depth = 1;

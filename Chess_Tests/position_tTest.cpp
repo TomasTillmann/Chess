@@ -31,7 +31,7 @@ TEST_F(Position_tTest, make_move_normal) {
 
 	new_position_expected.place(move.to(), piece);
 
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	ASSERT_EQ(new_position_expected, new_position_actual) << "Expected:\n" << new_position_expected << "Actual:\n" << new_position_actual << std::endl;
 }
@@ -44,7 +44,7 @@ TEST_F(Position_tTest, make_move_castle_short_white) {
 	position.place(square_t(7, 0), Piece::Rook | Color::White);
 
 	move_t move = move_t(square_t(4, 0), square_t(6, 0), MoveType::Castle);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(6, 0), Piece::King | Color::White);
 	new_position_expected.place(square_t(5, 0), Piece::Rook | Color::White);
@@ -59,7 +59,7 @@ TEST_F(Position_tTest, make_move_castle_long_white) {
 	position.place(square_t(0, 0), Piece::Rook | Color::White);
 
 	move_t move = move_t(square_t(4, 0), square_t(2, 0), MoveType::Castle);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(2,0), Piece::King | Color::White);
 	new_position_expected.place(square_t(3,0), Piece::Rook | Color::White);
@@ -74,7 +74,7 @@ TEST_F(Position_tTest, make_move_castle_short_black) {
 	position.place(square_t(7, 7), Piece::Rook | Color::Black);
 
 	move_t move = move_t(square_t(4, 7), square_t(6, 7), MoveType::Castle);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(6, 7), Piece::King | Color::Black);
 	new_position_expected.place(square_t(5, 7), Piece::Rook | Color::Black);
@@ -89,7 +89,7 @@ TEST_F(Position_tTest, make_move_castle_long_black) {
 	position.place(square_t(0, 7), Piece::Rook | Color::Black);
 
 	move_t move = move_t(square_t(4, 7), square_t(2, 7), MoveType::Castle);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(2,7), Piece::King | Color::Black);
 	new_position_expected.place(square_t(3,7), Piece::Rook | Color::Black);
@@ -98,14 +98,14 @@ TEST_F(Position_tTest, make_move_castle_long_black) {
 
 TEST_F(Position_tTest, make_move_enpassant_white) {
 	new_position_expected = Position(position);
-	position.place(square_t(4, 5), Piece::Pawn | Color::White);
-	position.place(square_t(3, 5), Piece::Pawn | Color::Black);
+	position.place(square_t(4, 4), Piece::Pawn | Color::White);
+	position.place(square_t(3, 4), Piece::Pawn | Color::Black);
 
 
-	move_t move = move_t(square_t(4, 5), square_t(3, 6), MoveType::EnPassant);
-	Position new_position_actual = position.make_move(move);
+	move_t move = move_t(square_t(4, 4), square_t(3, 5), MoveType::EnPassant);
+	Position new_position_actual = position.cmake_move(move);
 
-	new_position_expected.place(square_t(3, 6), Piece::Pawn | Color::White);
+	new_position_expected.place(square_t(3, 5), Piece::Pawn | Color::White);
 	ASSERT_EQ(new_position_expected, new_position_actual);
 }
 
@@ -115,7 +115,7 @@ TEST_F(Position_tTest, make_move_enpassant_black) {
 	position.place(square_t(3, 3), Piece::Pawn | Color::White);
 
 	move_t move = move_t(square_t(4, 3), square_t(3, 2), MoveType::EnPassant);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(3, 2), Piece::Pawn | Color::Black);
 	ASSERT_EQ(new_position_expected, new_position_actual);
@@ -126,7 +126,7 @@ TEST_F(Position_tTest, make_move_promotion_white) {
 	position.place(square_t(4, 6), Piece::Pawn | Color::White);
 
 	move_t move = move_t(square_t(4, 6), square_t(4, 7), MoveType::Promotion | Piece::Queen);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(4, 7), Piece::Queen | Color::White);
 	ASSERT_EQ(new_position_expected, new_position_actual);
@@ -137,7 +137,7 @@ TEST_F(Position_tTest, make_move_promotion_black) {
 	position.place(square_t(4, 1), Piece::Pawn | Color::Black);
 
 	move_t move = move_t(square_t(4, 1), square_t(4, 0), MoveType::Promotion | Piece::Bishop);
-	Position new_position_actual = position.make_move(move);
+	Position new_position_actual = position.cmake_move(move);
 
 	new_position_expected.place(square_t(4, 0), Piece::Bishop | Color::Black);
 	ASSERT_EQ(new_position_expected, new_position_actual);

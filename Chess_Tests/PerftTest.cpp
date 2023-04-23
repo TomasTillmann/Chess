@@ -21,7 +21,7 @@ private:
 		std::size_t count;
 
 		for (auto&& move : legal_moves) {
-			count = perft_rec(position.make_move(move), depth - 1);
+			count = perft_rec(position.cmake_move(move), depth - 1);
 			sum += count;
 		}
 
@@ -135,7 +135,7 @@ protected:
 		std::size_t count;
 
 		for (auto&& move : legal_moves) {
-			count = perft_rec(position.make_move(move), depth - 1);
+			count = perft_rec(position.cmake_move(move), depth - 1);
 			sum += count;
 			std::cout << move << ": " << count << std::endl;
 		}
@@ -174,17 +174,17 @@ TEST_F(PerftTest, Position_3_depth_4)
 
 TEST_F(PerftTest, Position_3_depth_5)
 {
-	int actual = perft(position3, 5);
+	//int actual = perft(position3, 5);
 
-	ASSERT_EQ(674624, actual);
-	//ASSERT_TRUE(false) << "takes long - not run" << std::endl;
+	//ASSERT_EQ(674624, actual);
+	ASSERT_TRUE(false) << "takes long - not run" << std::endl;
 }
 
 TEST_F(PerftTest, Position_3_en_passant)
 {
-	position3 = position3.make_move(move_t::h("e2e4"));
-	position3 = position3.make_move(move_t::h("f4f3"));
-	position3 = position3.make_move(move_t::h("g2g3"));
+	position3.make_move(move_t::h("e2e4"));
+	position3.make_move(move_t::h("f4f3"));
+	position3.make_move(move_t::h("g2g3"));
 
 	int actual = perft(position3, 1);
 

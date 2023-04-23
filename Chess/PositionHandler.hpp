@@ -18,6 +18,12 @@ private:
 public:
 	static std::set<square_t> get_attacked_squares(const Position& position, color_t color);
 	static std::set<square_t> get_attacked_squares(const Position& position, square_t square);
+
+	static std::set<square_t> get_protecting_pieces(const Position& position, color_t player, square_t square);
+	static std::set<square_t> get_attacking_pieces(const Position& position, color_t player, square_t square);
+
+	static std::set<square_t> get_player_pieces(const Position& position, color_t player);
+
 	static square_t get_king(const Position& position, color_t color);
 };
 

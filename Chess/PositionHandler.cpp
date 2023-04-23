@@ -58,6 +58,61 @@ std::set<square_t> PositionHandler::get_attacked_squares(const Position& positio
 	}
 }
 
+std::set<square_t> PositionHandler::get_protecting_pieces(const Position& position, color_t player, square_t square) {
+	std::set<square_t> protecting_pieces;
+
+	for (index_t i = 0; i < 63; ++i)
+	{
+		piece_t piece = position.at(i);
+		if ((piece & Color::Mask) == player)
+		{
+			std::set<square_t> squares = PositionHandler::get_attacked_squares(position, Position::to_square(i));
+
+			if (squares.find(square) != squares.end())
+			{
+				protecting_pieces.emplace(Position::to_square(i));
+			}
+		}
+	}
+
+	return protecting_pieces;
+}
+
+std::set<square_t> PositionHandler::get_attacking_pieces(const Position& position, color_t player, square_t square) {
+	std::set<square_t> attacking_pieces;
+	color_t opponent = Color::op(player);
+
+	for (index_t i = 0; i < 63; ++i)
+	{
+		piece_t piece = position.at(i);
+		if ((piece & Color::Mask) == opponent)
+		{
+			std::set<square_t> squares = PositionHandler::get_attacked_squares(position, Position::to_square(i));
+
+			if (squares.find(square) != squares.end())
+			{
+				attacking_pieces.emplace(Position::to_square(i));
+			}
+		}
+	}
+
+	return attacking_pieces;
+}
+
+std::set<square_t> PositionHandler::get_player_pieces(const Position& position, color_t player) {
+	std::set<square_t> friendly_pieces;
+
+	for (index_t i = 0; i < 63; ++i)
+	{
+		piece_t piece = position.at(i);
+		if ((piece & Color::Mask) == player)
+		{
+			friendly_pieces.emplace(Position::to_square(i));
+		}
+	}
+
+	return friendly_pieces;
+}
 
 square_t PositionHandler::get_king(const Position& position, color_t color) {
 	for (index_t i = 0; i < 64; ++i) {

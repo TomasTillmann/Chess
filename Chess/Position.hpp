@@ -15,14 +15,6 @@ private:
 	positionInfo_t _info;
 	move_t _last_move;
 
-	inline static index_t from_square(square_t square) {
-		return (7 - square.rank()) * 8 + square.file();
-	}
-
-	inline static square_t to_square(index_t i) {
-		return square_t(i % 8, 7 - (i / 8));
-	}
-
 	void update_info(move_t move) {
 		if (move.from() == square_t(0, 0) || move.to() == square_t(0, 0)) {
 			_info = _info | PositionInfo::WLrook_moved;
@@ -60,13 +52,33 @@ private:
 public:
 	friend PositionHandler;
 
+	Position(color_t to_play)
+		: _to_play(to_play), _info(), _last_move(move_t::None) {
+		_pieces.resize(64);
+	}
+
+	inline static index_t from_square(square_t square) {
+		return (7 - square.rank()) * 8 + square.file();
+	}
+
+	inline static square_t to_square(index_t i) {
+		return square_t(i % 8, 7 - (i / 8));
+	}
+
 	static Position get_starting();
 
 	std::string to_string() const;
 
-	Position(color_t to_play)
-		: _to_play(to_play), _info(), _last_move(move_t::None) {
-		_pieces.resize(64);
+	int pieces_count() const {
+		int count = 0;
+		for (auto&& piece : _pieces)
+		{
+			if ((piece & Piece::Mask) != Piece::None) {
+				++count;
+			}
+		}
+
+		return count;
 	}
 
 	bool operator ==(const Position& pos) const {
@@ -98,7 +110,7 @@ public:
 	void place(square_t square, piece_t piece) {
 #if DEBUG
 		if (!square.is_on_board()) {
-			throw std::invalid_argument("not on board");
+			throw std::invalid_argument("square not on board");
 		}
 #endif
 
@@ -108,11 +120,21 @@ public:
 	piece_t at(square_t square) const {
 #if DEBUG
 		if (!square.is_on_board()) {
-			throw std::invalid_argument("not on board");
+			throw std::invalid_argument("square not on board");
 		}
 #endif
 
 		return _pieces[from_square(square)];
+	}
+
+	piece_t at(index_t index) const {
+#if DEBUG
+		if (!(0 <= index && index <= 7))
+		{
+			throw std::invalid_argument("index not on board");
+		}
+#endif
+		return _pieces[index];
 	}
 
 	bool is_check() const;

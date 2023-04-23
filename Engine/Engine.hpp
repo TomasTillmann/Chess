@@ -24,20 +24,7 @@ private:
 	Evaluator _evaluator;
 
 public:
-	int evaluate(const Position& position, int depth) const {
-		int eval = minimax(position, depth, position.to_play() == Color::White, INT_MIN, INT_MAX);
-
-		// black has forced win
-		if (eval == INT_MIN) {
-			return -1;
-		}
-		// white has forced win
-		else if (eval == INT_MAX) {
-			return 1;
-		}
-
-		return damp(eval);
-	}
+	int evaluate(const Position& position, int depth) const;
 
 private:
 	/// <summary>
@@ -46,70 +33,17 @@ private:
 	/// </summary>
 	/// <param name="position"></param>
 	/// <param name="next_positions"></param>
-	std::vector<move_t> get_next_moves(const Position& position) const {
-		std::vector<move_t> next_moves = MoveGenerator::generate_legal_moves(position);
+	std::vector<move_t> get_next_moves(const Position& position) const;
 
-		std::sort(next_moves.begin(), next_moves.end(), [&](const move_t& move_a, const move_t& move_b) {
-			return eval(position.cmake_move(move_a)) < eval(position.cmake_move(move_b));
-			});
+	int fast_evaluate(const Position& position) const;
 
-		return next_moves;
-	}
+	int full_evaluate(const Position& position) const;
 
-	int eval(const Position& position) const {
-		return _evaluator.evaluate(position);
-	}
+	double damp(double value) const;
 
-	int minimax(const Position& position, bool depth, bool is_maximizing_player, int alpha, int beta) const {
-		if (position.is_over() || depth == 0) {
-			return eval(position);
-		}
+	double sigmoid(double value) const;
 
-		int best_eval;
-		int eval;
-		std::vector<move_t> next_moves;
-
-		if (is_maximizing_player) {
-			best_eval = INT_MIN;
-			next_moves = get_next_moves(position);
-			for (auto&& next_move : next_moves) {
-				Position next_position = position.cmake_move(next_move);
-				eval = minimax(next_position, depth - 1, false, alpha, beta);
-				best_eval = std::max(best_eval, eval);
-
-				alpha = std::max(alpha, best_eval);
-				if (beta <= alpha) {
-					break;
-				}
-			}
-
-			return best_eval;
-		}
-		else {
-			best_eval = INT_MAX;
-			next_moves = get_next_moves(position);
-			for (auto&& next_move : next_moves) {
-				Position next_position = position.cmake_move(next_move);
-				eval = minimax(next_position, depth - 1, true, alpha, beta);
-				best_eval = std::min(best_eval, eval);
-
-				beta = std::min(beta, best_eval);
-				if (beta <= alpha) {
-					break;
-				}
-			}
-
-			return best_eval;
-		}
-	}
-
-	double damp(double value) const {
-		return 2 * sigmoid(value) - 1;
-	}
-
-	double sigmoid(double value) const {
-		return 1 / (1 + std::exp(-value));
-	}
+	int minimax(const Position& position, bool depth, bool is_maximizing_player, int alpha, int beta) const;
 };
 
 #endif

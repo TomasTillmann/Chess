@@ -3,8 +3,8 @@
 #include "MoveGenerator.hpp"
 #include "PositionHandler.hpp"
 
-position_t position_t::get_starting() {
-	position_t starting_position = position_t(Color::White);
+Position Position::get_starting() {
+	Position starting_position = Position(Color::White);
 	starting_position.place(square_t(0, 1), Piece::Pawn | Color::White);
 	starting_position.place(square_t(1, 1), Piece::Pawn | Color::White);
 	starting_position.place(square_t(2, 1), Piece::Pawn | Color::White);
@@ -44,7 +44,7 @@ position_t position_t::get_starting() {
 	return starting_position;
 }
 
-std::string position_t::to_string() const {
+std::string Position::to_string() const {
 	std::string pos = "";
 	std::string row = "";
 
@@ -61,8 +61,8 @@ std::string position_t::to_string() const {
 	return pos;
 }
 
-position_t position_t::make_move(move_t move) const {
-	position_t new_position = position_t(*this);
+Position Position::make_move(move_t move) const {
+	Position new_position = Position(*this);
 	new_position.to_play(Color::op(to_play()));
 	new_position._last_move = move;
 
@@ -116,16 +116,16 @@ position_t position_t::make_move(move_t move) const {
 	return new_position;
 }
 
-bool position_t::is_check() const {
+bool Position::is_check() const {
 	square_t king = PositionHandler::get_king(*this, to_play());
 	std::set<square_t> attacked_squares = PositionHandler::get_attacked_squares(*this, Color::op(to_play()));
 	return (attacked_squares.find(king) != attacked_squares.end());
 }
 
-bool position_t::is_checkmate() const {
+bool Position::is_checkmate() const {
 	return is_check() && (MoveGenerator::generate_legal_moves(*this).size() == 0);
 }
 
-bool position_t::is_stalemate() const {
+bool Position::is_stalemate() const {
 	return (!is_check()) && (MoveGenerator::generate_legal_moves(*this).size() == 0);
 }

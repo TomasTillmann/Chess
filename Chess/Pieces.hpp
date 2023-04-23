@@ -25,17 +25,17 @@ public:
 
 class SlidingPiece : public PieceBase {
 public:
-	std::set<square_t> get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const;
-	std::vector<move_t> get_legal_moves(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const;
+	std::vector<move_t> get_legal_moves(const Position& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const;
 };
 
 class King : public SlidingPiece {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
-	void castling(const position_t& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const;
+	void castling(const Position& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const;
 
 	std::vector<square_t> _directions = {
 		square_t(0,1),
@@ -51,8 +51,8 @@ private:
 
 class Queen : public SlidingPiece {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
 	std::vector<square_t> _directions = {
@@ -69,8 +69,8 @@ private:
 
 class Bishop : public SlidingPiece {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
 	std::vector<square_t> _directions = {
@@ -83,8 +83,8 @@ private:
 
 class Knight : public PieceBase {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
 	std::vector<square_t> _directions = {
@@ -101,8 +101,8 @@ private:
 
 class Rook : public SlidingPiece {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
 	std::vector<square_t> _directions = {
@@ -115,8 +115,8 @@ private:
 
 class Pawn : public PieceBase {
 public:
-	std::vector<move_t> generate_legal_moves(const position_t& position, square_t square) const;
-	std::set<square_t> get_attacked_squares(const position_t& position, square_t square) const;
+	std::vector<move_t> generate_legal_moves(const Position& position, square_t square) const;
+	std::set<square_t> get_attacked_squares(const Position& position, square_t square) const;
 
 private:
 	void add_promotion_moves(move_t move, std::vector<move_t>& legal_moves) const;

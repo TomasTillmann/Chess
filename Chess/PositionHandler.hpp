@@ -16,9 +16,9 @@ private:
 	inline static Pawn pawn = Pawn();
 
 public:
-	static std::set<square_t> get_attacked_squares(const position_t& position, color_t color);
-	static std::set<square_t> get_attacked_squares(const position_t& position, square_t square);
-	static square_t get_king(const position_t& position, color_t color);
+	static std::set<square_t> get_attacked_squares(const Position& position, color_t color);
+	static std::set<square_t> get_attacked_squares(const Position& position, square_t square);
+	static square_t get_king(const Position& position, color_t color);
 };
 
 #endif

@@ -7,7 +7,7 @@
 
 class QueenTest : public ::testing::Test {
 protected:
-	position_t position = position_t(Color::White);
+	Position position = Position(Color::White);
 
 	void SetUp() override {
 		position.place(square_t(0, 1), Piece::King | Color::White);

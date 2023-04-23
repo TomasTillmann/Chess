@@ -17,8 +17,8 @@ private:
 	inline static Pawn pawn = Pawn();
 
 public:
-	static std::vector<move_t> generate_legal_moves(const position_t& position);
-	static std::vector<move_t> generate_legal_moves(const position_t& position, square_t square);
+	static std::vector<move_t> generate_legal_moves(const Position& position);
+	static std::vector<move_t> generate_legal_moves(const Position& position, square_t square);
 };
 
 #endif

@@ -8,7 +8,7 @@
 #include "Debug.hpp"
 #include "Types.hpp"
 
-struct position_t {
+class Position {
 private:
 	std::vector<piece_t> _pieces;
 	color_t _to_play;
@@ -52,7 +52,7 @@ private:
 		place(move.to(), piece);
 	}
 
-	friend std::ostream& operator <<(std::ostream& os, const position_t& position) {
+	friend std::ostream& operator <<(std::ostream& os, const Position& position) {
 		os << position.to_string();
 		return os;
 	}
@@ -60,16 +60,16 @@ private:
 public:
 	friend PositionHandler;
 
-	static position_t get_starting();
+	static Position get_starting();
 
 	std::string to_string() const;
 
-	position_t(color_t to_play)
+	Position(color_t to_play)
 		: _to_play(to_play), _info(), _last_move(move_t::None) {
 		_pieces.resize(64);
 	}
 
-	bool operator ==(const position_t& pos) const {
+	bool operator ==(const Position& pos) const {
 		for (index_t i = 0; i < 64; ++i) {
 			if (_pieces[i] != pos._pieces[i]) {
 				return false;
@@ -91,7 +91,7 @@ public:
 		_info |= info;
 	}
 
-	position_t make_move(move_t move) const;
+	Position make_move(move_t move) const;
 
 	void place(square_t square, piece_t piece) {
 #if DEBUG

@@ -2,8 +2,8 @@
 #include <queue>
 #include <vector>
 
-position_t position3 = position_t(Color::White);
-position_t position2 = position_t(Color::White);
+Position position3 = Position(Color::White);
+Position position2 = Position(Color::White);
 
 void setup_position3()
 {
@@ -60,7 +60,7 @@ void position2_setup()
 	position2.place(square_t::h("h8"), Piece::Rook | Color::Black);
 }
 
-int perft_rec(const position_t& position, int depth) {
+int perft_rec(const Position& position, int depth) {
 	//std::cout << position << std::endl;
 
 	if (depth <= 0) {
@@ -79,7 +79,7 @@ int perft_rec(const position_t& position, int depth) {
 	return sum;
 }
 
-int perft(const position_t& position, int depth) {
+int perft(const Position& position, int depth) {
 	std::vector<move_t> legal_moves = MoveGenerator::generate_legal_moves(position);
 	std::size_t sum = 0;
 	std::size_t count;

@@ -1,7 +1,7 @@
 #include "Pieces.hpp"
 #include "PositionHandler.hpp"
 
-std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const {
+std::set<square_t> SlidingPiece::get_attacked_squares(const Position& position, const std::vector<square_t>& directions, int expand_factor, square_t square) const {
 	std::set<square_t> attacked_squares;
 
 	for (auto&& direction : directions) {
@@ -24,7 +24,7 @@ std::set<square_t> SlidingPiece::get_attacked_squares(const position_t& position
 	return attacked_squares;
 }
 
-std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
+std::vector<move_t> SlidingPiece::get_legal_moves(const Position& position, const std::vector<square_t>& directions, int expand_factor, color_t friendly_color, square_t square) const {
 #if DEBUG
 	if ((position.at(square) & Piece::Mask) == Piece::King) {
 		throw std::invalid_argument("Even though king is sliding piece, it can't be processed here");
@@ -73,7 +73,7 @@ std::vector<move_t> SlidingPiece::get_legal_moves(const position_t& position, co
 }
 
 
-std::vector<move_t> King::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> King::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t king = position.at(square);
 	std::vector<move_t> legal_moves;
 
@@ -109,7 +109,7 @@ std::vector<move_t> King::generate_legal_moves(const position_t& position, squar
 	return legal_moves;
 }
 
-void King::castling(const position_t& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const {
+void King::castling(const Position& position, square_t square, piece_t king, std::vector<move_t>& legal_moves) const {
 	// can't castle when in check
 	if (position.is_check())
 	{
@@ -160,7 +160,7 @@ void King::castling(const position_t& position, square_t square, piece_t king, s
 	}
 }
 
-std::set<square_t> King::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> King::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t king = position.at(square);
 
 	#if DEBUG
@@ -173,7 +173,7 @@ std::set<square_t> King::get_attacked_squares(const position_t& position, square
 }
 
 
-std::vector<move_t> Queen::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> Queen::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t queen = position.at(square);
 
 	#if DEBUG
@@ -185,7 +185,7 @@ std::vector<move_t> Queen::generate_legal_moves(const position_t& position, squa
 	return SlidingPiece::get_legal_moves(position, _directions, 7, queen & Color::Mask, square);
 }
 
-std::set<square_t> Queen::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> Queen::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t queen = position.at(square);
 	std::set<square_t> attacked_squares;
 
@@ -199,7 +199,7 @@ std::set<square_t> Queen::get_attacked_squares(const position_t& position, squar
 }
 
 
-std::vector<move_t> Bishop::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> Bishop::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t bishop = position.at(square);
 
 	#if DEBUG
@@ -211,7 +211,7 @@ std::vector<move_t> Bishop::generate_legal_moves(const position_t& position, squ
 	return SlidingPiece::get_legal_moves(position, _directions, 7, bishop & Color::Mask, square);
 }
 
-std::set<square_t> Bishop::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> Bishop::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t bishop = position.at(square);
 	std::set<square_t> attacked_squares;
 
@@ -225,7 +225,7 @@ std::set<square_t> Bishop::get_attacked_squares(const position_t& position, squa
 }
 
 
-std::vector<move_t> Knight::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> Knight::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t knight = position.at(square);
 #if DEBUG
 	if ((knight & Piece::Mask) != Piece::Knight) {
@@ -262,7 +262,7 @@ std::vector<move_t> Knight::generate_legal_moves(const position_t& position, squ
 	return legal_moves;
 }
 
-std::set<square_t> Knight::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> Knight::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t knight = position.at(square);
 	std::set<square_t> attacked_squares;
 
@@ -285,7 +285,7 @@ std::set<square_t> Knight::get_attacked_squares(const position_t& position, squa
 }
 
 
-std::vector<move_t> Rook::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> Rook::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t rook = position.at(square);
 
 	#if DEBUG
@@ -297,7 +297,7 @@ std::vector<move_t> Rook::generate_legal_moves(const position_t& position, squar
 	return SlidingPiece::get_legal_moves(position, _directions, 7, rook & Color::Mask, square);
 }
 
-std::set<square_t> Rook::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> Rook::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t rook = position.at(square);
 	std::set<square_t> attacked_squares;
 
@@ -311,7 +311,7 @@ std::set<square_t> Rook::get_attacked_squares(const position_t& position, square
 }
 
 
-std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, square_t square) const {
+std::vector<move_t> Pawn::generate_legal_moves(const Position& position, square_t square) const {
 	piece_t pawn = position.at(square);
 	std::vector<move_t> legal_moves;
 
@@ -406,7 +406,7 @@ std::vector<move_t> Pawn::generate_legal_moves(const position_t& position, squar
 	return legal_moves;
 }
 
-std::set<square_t> Pawn::get_attacked_squares(const position_t& position, square_t square) const {
+std::set<square_t> Pawn::get_attacked_squares(const Position& position, square_t square) const {
 	piece_t pawn = position.at(square);
 	std::set<square_t> attacked_squares;
 

@@ -1,7 +1,7 @@
 #include "PositionHandler.hpp"
 #include <iostream>
 
-std::set<square_t> PositionHandler::get_attacked_squares(const position_t& position, color_t color) {
+std::set<square_t> PositionHandler::get_attacked_squares(const Position& position, color_t color) {
 	std::set<square_t> attacked_squares;
 	std::set<square_t> attacked_squares_piece;
 
@@ -20,7 +20,7 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 	return attacked_squares;
 }
 
-std::set<square_t> PositionHandler::get_attacked_squares(const position_t& position, square_t square) {
+std::set<square_t> PositionHandler::get_attacked_squares(const Position& position, square_t square) {
 	piece_t piece = position.at(square);
 
 	switch (piece & Piece::Mask) {
@@ -59,10 +59,10 @@ std::set<square_t> PositionHandler::get_attacked_squares(const position_t& posit
 }
 
 
-square_t PositionHandler::get_king(const position_t& position, color_t color) {
+square_t PositionHandler::get_king(const Position& position, color_t color) {
 	for (index_t i = 0; i < 64; ++i) {
 		if ((position._pieces[i] & Piece::Mask) == Piece::King && (position._pieces[i] & Color::Mask) == color) {
-			return position_t::to_square(i);
+			return Position::to_square(i);
 		}
 	}
 

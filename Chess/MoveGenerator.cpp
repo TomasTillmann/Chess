@@ -1,6 +1,6 @@
 #include "MoveGenerator.hpp"
 
-std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& position) {
+std::vector<move_t> MoveGenerator::generate_legal_moves(const Position& position) {
 	std::vector<move_t> legal_moves;
 	std::vector<move_t> legal_moves_piece;
 	piece_t piece;
@@ -19,7 +19,7 @@ std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& positi
 	return legal_moves;
 }
 
-std::vector<move_t> MoveGenerator::generate_legal_moves(const position_t& position, square_t square) {
+std::vector<move_t> MoveGenerator::generate_legal_moves(const Position& position, square_t square) {
 	piece_t piece = position.at(square);
 
 	switch (piece & Piece::Mask) {

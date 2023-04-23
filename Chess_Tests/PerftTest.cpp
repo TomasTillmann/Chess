@@ -9,7 +9,7 @@
 // https://www.chessprogramming.org/Perft_Results
 class PerftTest : public ::testing::Test {
 private:
-	int perft_rec(const position_t& position, int depth) {
+	int perft_rec(const Position& position, int depth) {
 		//std::cout << position << std::endl;
 
 		if (depth <= 0) {
@@ -119,9 +119,9 @@ private:
 	}
 
 protected:
-	position_t position2 = position_t(Color::White);
-	position_t position3 = position_t(Color::White);
-	position_t position5 = position_t(Color::White);
+	Position position2 = Position(Color::White);
+	Position position3 = Position(Color::White);
+	Position position5 = Position(Color::White);
 
 	void SetUp() override {
 		position2_setup();
@@ -129,7 +129,7 @@ protected:
 		position5_setup();
 	}
 
-	int perft(const position_t& position, int depth) {
+	int perft(const Position& position, int depth) {
 		std::vector<move_t> legal_moves = MoveGenerator::generate_legal_moves(position);
 		std::size_t sum = 0;
 		std::size_t count;

@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="Debug.hpp" />
     <ClInclude Include="Chess.hpp" />
+    <ClInclude Include="Game.hpp" />
     <ClInclude Include="MoveGenerator.hpp" />
     <ClInclude Include="Pieces.hpp" />
     <ClInclude Include="Types.hpp" />

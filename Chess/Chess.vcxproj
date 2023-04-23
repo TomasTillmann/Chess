@@ -138,6 +138,8 @@
   <ItemGroup>
     <ClCompile Include="MoveGenerator.cpp" />
     <ClCompile Include="Pieces.cpp" />
+    <ClCompile Include="Position.cpp" />
+    <ClCompile Include="Position.hpp" />
     <ClCompile Include="PositionHandler.cpp" />
     <ClCompile Include="PositionHandler.hpp" />
     <ClCompile Include="Types.cpp" />

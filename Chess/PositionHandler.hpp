@@ -3,6 +3,7 @@
 
 #include "Types.hpp"
 #include "Pieces.hpp"
+#include "Position.hpp"
 #include <set>
 
 class PositionHandler {

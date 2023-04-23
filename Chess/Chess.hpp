@@ -5,5 +5,6 @@
 #include "Types.hpp"
 #include "PositionHandler.hpp"
 #include "MoveGenerator.hpp"
+#include "Position.hpp"
 
 #endif

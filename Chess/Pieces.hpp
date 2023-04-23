@@ -3,6 +3,7 @@
 
 #include "Types.hpp"
 #include "Debug.hpp"
+#include "Position.hpp"
 #include <set>
 
 

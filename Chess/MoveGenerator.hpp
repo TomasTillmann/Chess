@@ -4,6 +4,7 @@
 #include "Types.hpp"
 #include "Debug.hpp"
 #include "Pieces.hpp"
+#include "Position.hpp"
 #include <set>
 
 class MoveGenerator {

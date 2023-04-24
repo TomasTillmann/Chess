@@ -51,7 +51,7 @@ int EngineMinimax::full_evaluate(const Position& position) const {
 	return _evaluator.full_evaluate(position);
 }
 
-int EngineMinimax::minimax(const Position& position, bool depth, bool is_maximizing_player, int alpha, int beta) const {
+int EngineMinimax::minimax(const Position& position, int depth, bool is_maximizing_player, int alpha, int beta) const {
 	if (position.is_over() || depth == 0) {
 		return full_evaluate(position);
 	}

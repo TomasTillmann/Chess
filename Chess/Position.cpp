@@ -54,7 +54,7 @@ std::string Position::to_string() const {
 			row = "";
 		}
 
-		row += PieceBase::to_string(_pieces[i]);
+		row += PieceBase::to_string(_pieces[i]) + " ";
 	}
 	pos += row;
 

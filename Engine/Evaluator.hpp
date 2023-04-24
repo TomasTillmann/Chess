@@ -9,20 +9,20 @@ public:
 
 	double full_evaluate(const Position& position) const;
 
-	double evaluate_piece_score(const Position& position, square_t square) const;
-
 private:
 	double piece_cost(piece_t piece) const;
 
 	double piece_positioning_cost(const Position& position, piece_t piece, square_t square) const;
 
-	double evaluate_defending_score(const Position& position, square_t square) const;
+	double defending_score(const Position& position, square_t square) const;
 
-	double evaluate_mobility(const Position& position) const;
+	double mobility_score(const Position& position) const;
 
-	double evaluate_attacking_penalty(const Position& position, square_t square) const;
+	double op_king_cutoff_penalty(const Position& position, color_t player) const;
 
-	double evaluate_enprise_penalty(const Position& position, square_t square) const;
+	double attacking_penalty(const Position& position, square_t square) const;
+
+	double enprise_penalty(const Position& position, square_t square) const;
 
 	inline static int get_table_index(square_t square, color_t player) {
 		int white_index = Position::from_square(square);
@@ -88,6 +88,10 @@ private:
 		-30, -30, 0, 0, 0, 0, -30, -30,
 		-50, -30, -30, -30, -30, -30, -30, -50
 	};
+
+	const int defending_pawn_value = 9;
+	const int defending_normal_value = 3;
+	const int defending_queen_value = 2;
 };
 
 #endif

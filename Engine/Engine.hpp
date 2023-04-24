@@ -46,7 +46,7 @@ private:
 
 	int full_evaluate(const Position& position) const;
 
-	int minimax(const Position& position, bool depth, bool is_maximizing_player, int alpha, int beta) const;
+	int minimax(const Position& position, int depth, bool is_maximizing_player, int alpha, int beta) const;
 };
 
 #endif

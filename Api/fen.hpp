@@ -1,6 +1,9 @@
 #include "../Chess/Chess.hpp"
 #include <string>
 
+/// <summary>
+/// inspired by: https://codereview.stackexchange.com/questions/251795/parsing-a-chess-fen
+/// </summary>
 class FEN {
 public:
     inline static Position parse(const std::string& fen) {

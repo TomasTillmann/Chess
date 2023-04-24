@@ -35,6 +35,8 @@ public:
 				std::cout << move << ": " << count << std::endl;
 		}
 
+		if(print)
+			std::cout << "searched nodes in depth " << depth << ": " << sum << std::endl;
 		return sum;
 	}
 };

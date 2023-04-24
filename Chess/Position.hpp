@@ -129,7 +129,7 @@ public:
 
 	piece_t at(index_t index) const {
 #if DEBUG
-		if (!(0 <= index && index <= 7))
+		if (!(0 <= index && index <= 63))
 		{
 			throw std::invalid_argument("index not on board");
 		}

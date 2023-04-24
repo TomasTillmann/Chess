@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e75381d2-c42a-4ebe-9b36-001507c45ccb}</ProjectGuid>
-    <RootNamespace>Chess</RootNamespace>
+    <ProjectGuid>{7c48015f-9dd8-4cc1-b591-e2130d87ffec}</ProjectGuid>
+    <RootNamespace>Api</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -119,7 +119,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,20 +128,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Debug.hpp" />
-    <ClInclude Include="Chess.hpp" />
-    <ClInclude Include="MoveGenerator.hpp" />
-    <ClInclude Include="Pieces.hpp" />
-    <ClInclude Include="Types.hpp" />
+    <ClInclude Include="CliApi.hpp" />
+    <ClInclude Include="Command.hpp" />
+    <ClInclude Include="Game.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MoveGenerator.cpp" />
-    <ClCompile Include="Pieces.cpp" />
-    <ClCompile Include="Position.cpp" />
-    <ClCompile Include="Position.hpp" />
-    <ClCompile Include="PositionHandler.cpp" />
-    <ClCompile Include="PositionHandler.hpp" />
-    <ClCompile Include="Types.cpp" />
+    <ClCompile Include="CliApi.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{51bc05b8-563d-472b-95f1-62469afb9fb3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

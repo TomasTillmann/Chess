@@ -1,9 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "Position.hpp"
-#include "MoveGenerator.hpp"
-#include "Debug.hpp"
+#include "../Chess/Chess.hpp"
 #include <algorithm>
 
 class Game {
@@ -12,8 +10,7 @@ private:
 
 public:
 	Game()
-		: _position(Position::get_starting()) {
-	}
+		: _position(Position::get_starting()) { }
 
 	color_t player_to_play() const
 	{
@@ -24,7 +21,11 @@ public:
 		return _position;
 	}
 
-	void make_move(move_t move) {
+	bool is_over() const {
+		return _position.is_over();
+	}
+
+	void play_move(move_t move) {
 #if DEBUG
 		std::vector<move_t> legal_moves = MoveGenerator::generate_legal_moves(_position);
 		if (std::find(legal_moves.begin(), legal_moves.end(), move) == legal_moves.end()) {

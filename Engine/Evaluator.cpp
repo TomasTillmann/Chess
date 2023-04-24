@@ -25,11 +25,11 @@ int Evaluator::full_evaluate(const Position& position) const {
 	for (auto&& player_piece_sq : player_pieces_squares)
 	{
 		white_score += evaluate_piece_score(position, player_piece_sq);
-		//white_score += evaluate_defending_score(position, player_piece_sq);
-		//white_score += evaluate_mobility(position);
+		white_score += evaluate_defending_score(position, player_piece_sq);
+		white_score += evaluate_mobility(position);
 
-		//white_score -= evaluate_attacking_penalty(position, player_piece_sq);
-		//white_score -= evaluate_enprise_penalty(position, player_piece_sq);
+		white_score -= evaluate_attacking_penalty(position, player_piece_sq);
+		white_score -= evaluate_enprise_penalty(position, player_piece_sq);
 	}
 
 	int black_score = 0;
@@ -37,11 +37,11 @@ int Evaluator::full_evaluate(const Position& position) const {
 	for (auto&& player_piece_sq : player_pieces_squares)
 	{
 		black_score += evaluate_piece_score(position, player_piece_sq);
-		//black_score += evaluate_defending_score(position, player_piece_sq);
-		//black_score += evaluate_mobility(position);
+		black_score += evaluate_defending_score(position, player_piece_sq);
+		black_score += evaluate_mobility(position);
 
-		//black_score -= evaluate_attacking_penalty(position, player_piece_sq);
-		//black_score -= evaluate_enprise_penalty(position, player_piece_sq);
+		black_score -= evaluate_attacking_penalty(position, player_piece_sq);
+		black_score -= evaluate_enprise_penalty(position, player_piece_sq);
 	}
 
 	return white_score - black_score;

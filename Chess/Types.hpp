@@ -156,6 +156,7 @@ public:
 		return h(move_human_readable, MoveType::Normal);
 	}
 
+	// TODO: promotion represent
 	std::string to_string() const {
 		return _from.to_string() + _to.to_string();
 	}

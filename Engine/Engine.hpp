@@ -14,17 +14,24 @@ public:
 	/// Numbers closer to 1 indicate white is better.
 	/// Values around zero indicate equality.
 	/// </summary>
-	/// <param name="position">Position to evaluate.</param>
-	/// <param name="depth">Evaluation depth.</param>
 	virtual int evaluate(const Position& position, int depth) const = 0;
+
+	/// <summary>
+	/// Returns move distribution. The higher the assigned score in the distribution, the better the move.
+	/// </summary>
+	virtual void best_moves(const Position& position, std::vector<move_t>& moves, std::vector<double>& score, int depth) const = 0;
+
+	virtual ~Engine() { }
 };
 
-class EngineMinimax : Engine {
+class EngineMinimax : public Engine {
 private:
 	Evaluator _evaluator;
 
 public:
-	int evaluate(const Position& position, int depth) const;
+	int evaluate(const Position& position, int depth) const override;
+
+	void best_moves(const Position& position, std::vector<move_t>& moves, std::vector<double>& scores, int depth) const override;
 
 private:
 	/// <summary>
@@ -38,10 +45,6 @@ private:
 	int fast_evaluate(const Position& position) const;
 
 	int full_evaluate(const Position& position) const;
-
-	double damp(double value) const;
-
-	double sigmoid(double value) const;
 
 	int minimax(const Position& position, bool depth, bool is_maximizing_player, int alpha, int beta) const;
 };

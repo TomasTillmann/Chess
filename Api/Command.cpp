@@ -68,6 +68,13 @@ command_t Command::Parser::Parse(std::string raw_command, std::vector<std::strin
 			}
 			args.push_back(tokens[2]);
 		}
+		else if (tokens[1] == "play_best") {
+			command |= play_best;
+			if (tokens.size() != 3) {
+				throw std::invalid_argument("missing depth arg");
+			}
+			args.push_back(tokens[2]);
+		}
 		else if (tokens[1] == "perft") {
 			command |= perft;
 			if (tokens.size() != 3) {

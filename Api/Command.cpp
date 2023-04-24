@@ -37,6 +37,19 @@ command_t Command::Parser::Parse(std::string raw_command, std::vector<std::strin
 		else if (tokens[1] == "legal_moves") {
 			command |= legal_moves;
 		}
+		else if (tokens[1] == "fen") {
+			command |= fen;
+			if (tokens.size() != 6 + 2) {
+				throw std::invalid_argument("missing fen argument");
+			}
+
+			std::string fen = "";
+			for (std::size_t i = 2; i < 6 + 1; ++i) {
+				fen += tokens[i] + " ";
+			}
+			fen += tokens[6 + 1];
+			args.push_back(fen);
+		}
 	}
 	else if (tokens[0] == "engine") {
 		command |= engine;

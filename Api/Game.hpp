@@ -21,6 +21,10 @@ public:
 		return _position;
 	}
 
+	void set_position(const Position& position) {
+		_position = position;
+	}
+
 	bool is_over() const {
 		return _position.is_over();
 	}

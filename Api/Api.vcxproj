@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClInclude Include="CliApi.hpp" />
     <ClInclude Include="Command.hpp" />
+    <ClInclude Include="fen.hpp" />
     <ClInclude Include="Game.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,15 +1,15 @@
 #include "Evaluator.hpp"
 #include <cmath>
 
-int Evaluator::fast_evaluate(const Position& position) const {
-	int white_score = 0;
+double Evaluator::fast_evaluate(const Position& position) const {
+	double white_score = 0;
 	std::set<square_t> player_pieces_squares = PositionHandler::get_player_pieces(position, Color::White);
 	for (auto&& player_piece_sq : player_pieces_squares)
 	{
 		white_score += evaluate_piece_score(position, player_piece_sq);
 	}
 
-	int black_score = 0;
+	double black_score = 0;
 	player_pieces_squares = PositionHandler::get_player_pieces(position, Color::Black);
 	for (auto&& player_piece_sq : player_pieces_squares)
 	{
@@ -19,7 +19,7 @@ int Evaluator::fast_evaluate(const Position& position) const {
 	return white_score - black_score;
 }
 
-int Evaluator::full_evaluate(const Position& position) const {
+double Evaluator::full_evaluate(const Position& position) const {
 	int white_score = 0;
 	std::set<square_t> player_pieces_squares = PositionHandler::get_player_pieces(position, Color::White);
 	for (auto&& player_piece_sq : player_pieces_squares)
@@ -47,7 +47,7 @@ int Evaluator::full_evaluate(const Position& position) const {
 	return white_score - black_score;
 }
 
-int Evaluator::piece_cost(piece_t piece) const {
+double Evaluator::piece_cost(piece_t piece) const {
 	switch (piece & Piece::Mask) {
 	case Piece::None: {
 		return 0;
@@ -83,7 +83,7 @@ int Evaluator::piece_cost(piece_t piece) const {
 	}
 }
 
-int Evaluator::piece_positioning_cost(const Position& position, piece_t piece, square_t square) const {
+double Evaluator::piece_positioning_cost(const Position& position, piece_t piece, square_t square) const {
 	color_t piece_color = piece & Color::Mask;
 
 	switch (piece & Piece::Mask) {
@@ -127,11 +127,11 @@ int Evaluator::piece_positioning_cost(const Position& position, piece_t piece, s
 	}
 }
 
-int Evaluator::evaluate_piece_score(const Position& position, square_t square) const {
+double Evaluator::evaluate_piece_score(const Position& position, square_t square) const {
 	return piece_positioning_cost(position, position.at(square), square);
 }
 
-int Evaluator::evaluate_defending_score(const Position& position, square_t square) const {
+double Evaluator::evaluate_defending_score(const Position& position, square_t square) const {
 	int score = 0;
 
 	std::set<square_t> protecting_pieces = PositionHandler::get_protecting_pieces(position, position.to_play(), square);
@@ -144,11 +144,11 @@ int Evaluator::evaluate_defending_score(const Position& position, square_t squar
 	return score;
 }
 
-int Evaluator::evaluate_mobility(const Position& position) const {
+double Evaluator::evaluate_mobility(const Position& position) const {
 	return MoveGenerator::generate_legal_moves(position).size() * 7;
 }
 
-int Evaluator::evaluate_attacking_penalty(const Position & position, square_t square) const {
+double Evaluator::evaluate_attacking_penalty(const Position & position, square_t square) const {
 	int penalty = 0;
 	std::set<square_t> attacking_pieces = PositionHandler::get_attacking_pieces(position, position.to_play(), square);
 	for (auto&& attacking_piece : attacking_pieces)
@@ -161,7 +161,7 @@ int Evaluator::evaluate_attacking_penalty(const Position & position, square_t sq
 	return penalty;
 }
 
-int Evaluator::evaluate_enprise_penalty(const Position& position, square_t square) const {
+double Evaluator::evaluate_enprise_penalty(const Position& position, square_t square) const {
 	int penalty = 0;
 	std::set<square_t> attacking_pieces = PositionHandler::get_attacking_pieces(position, position.to_play(), square);
 	std::set<square_t> protecting_pieces = PositionHandler::get_protecting_pieces(position, position.to_play(), square);

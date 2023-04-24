@@ -52,6 +52,9 @@ private:
 public:
 	friend PositionHandler;
 
+	Position()
+	: Position(Color::White) { }
+
 	Position(color_t to_play)
 		: _to_play(to_play), _info(), _last_move(move_t::None) {
 		_pieces.resize(64);
@@ -98,6 +101,8 @@ public:
 	positionInfo_t info() const { return _info; }
 
 	move_t last_move() const { return _last_move; }
+
+	void last_move(move_t move) { _last_move = move; }
 
 	void add_info(positionInfo_t info) {
 		_info |= info;

@@ -27,6 +27,7 @@ namespace Command {
 	const command_t show{ 0b0000000000000100 };
 	const command_t perft{ 0b0000000000000101 };
 	const command_t legal_moves{ 0b0000000000000111 };
+	const command_t fen{ 0b0000000000001000 };
 
 	class CommandArgsParser;
 	class Parser {

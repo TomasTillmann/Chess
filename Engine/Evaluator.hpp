@@ -5,24 +5,24 @@
 
 class Evaluator {
 public:
-	int fast_evaluate(const Position& position) const;
+	double fast_evaluate(const Position& position) const;
 
-	int full_evaluate(const Position& position) const;
+	double full_evaluate(const Position& position) const;
 
-	int evaluate_piece_score(const Position& position, square_t square) const;
+	double evaluate_piece_score(const Position& position, square_t square) const;
 
 private:
-	int piece_cost(piece_t piece) const;
+	double piece_cost(piece_t piece) const;
 
-	int piece_positioning_cost(const Position& position, piece_t piece, square_t square) const;
+	double piece_positioning_cost(const Position& position, piece_t piece, square_t square) const;
 
-	int evaluate_defending_score(const Position& position, square_t square) const;
+	double evaluate_defending_score(const Position& position, square_t square) const;
 
-	int evaluate_mobility(const Position& position) const;
+	double evaluate_mobility(const Position& position) const;
 
-	int evaluate_attacking_penalty(const Position& position, square_t square) const;
+	double evaluate_attacking_penalty(const Position& position, square_t square) const;
 
-	int evaluate_enprise_penalty(const Position& position, square_t square) const;
+	double evaluate_enprise_penalty(const Position& position, square_t square) const;
 
 	inline static int get_table_index(square_t square, color_t player) {
 		int white_index = Position::from_square(square);

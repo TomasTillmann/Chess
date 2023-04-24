@@ -1,9 +1,12 @@
 #include "CliApi.hpp"
 #include "../Engine/Perft.hpp"
+#include "fen.hpp"
 #include <string>
 
 void CliApi::run() {
 	command_t command;
+
+	// will always be of needed size
 	std::vector<std::string> command_args_raw;
 
 	while (true) {
@@ -34,6 +37,14 @@ void CliApi::run() {
 			std::cout << "Legal moves:" << std::endl;
 			for (auto&& legal_move : legal_moves) {
 				std::cout << legal_move << std::endl;
+			}
+		}
+		else if (command == (Command::position | Command::fen)) {
+			try {
+				_game.set_position(FEN::parse(command_args_raw[0]));
+			}
+			catch (std::exception& ex) {
+				std::cout << "Invalid fen" << std::endl;
 			}
 		}
 		else if (command == (Command::engine | Command::eval)) {

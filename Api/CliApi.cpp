@@ -56,14 +56,14 @@ void CliApi::run() {
 				std::cout << "Command invalid format" << std::endl;
 			}
 		}
-		else if (command == (Command::engine | Command::best_moves)) {
+		else if (command == (Command::engine | Command::moves_eval)) {
 			std::vector<move_t> best_moves;
 			std::vector<double> score;
 
 			try {
-				_engine->best_moves(_game.current_position(), best_moves, score, _command_parser.parse_depth(command_args_raw[0]));
+				_engine->moves_distribution(_game.current_position(), best_moves, score, _command_parser.parse_depth(command_args_raw[0]));
 
-				std::cout << "Best moves:" << std::endl;
+				std::cout << "Moves distribution:" << std::endl;
 				for (std::size_t i = 0; i < best_moves.size(); ++i) {
 					std::cout << "move: " << best_moves[i] << " eval: " << score[i] << std::endl;
 				}
@@ -77,7 +77,7 @@ void CliApi::run() {
 			std::vector<double> score;
 
 			try {
-				_engine->best_moves(_game.current_position(), best_moves, score, _command_parser.parse_depth(command_args_raw[0]));
+				_engine->moves_distribution(_game.current_position(), best_moves, score, _command_parser.parse_depth(command_args_raw[0]));
 				std::size_t best = 0;
 				for (std::size_t i = 0; i < best_moves.size(); ++i) {
 					if (_game.current_position().to_play() == Color::White ? score[i] > score[best] : score[i] < score[best]) {

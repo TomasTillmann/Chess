@@ -5,7 +5,7 @@ int EngineMinimax::evaluate(const Position& position, int depth) const {
 	return eval;
 }
 
-void EngineMinimax::best_moves(const Position& position, std::vector<move_t>& moves, std::vector<double>& scores, int depth) const {
+void EngineMinimax::moves_distribution(const Position& position, std::vector<move_t>& moves, std::vector<double>& scores, int depth) const {
 	 moves = MoveGenerator::generate_legal_moves(position);
 	 scores.resize(moves.size());
 

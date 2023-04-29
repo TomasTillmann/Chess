@@ -23,7 +23,7 @@ namespace Command {
 
 	const command_t move{ 0b0000000000000001 };
 	const command_t eval{ 0b0000000000000010 };
-	const command_t best_moves{ 0b0000000000000011 };
+	const command_t moves_eval{ 0b0000000000000011 };
 	const command_t show{ 0b0000000000000100 };
 	const command_t perft{ 0b0000000000000101 };
 	const command_t legal_moves{ 0b0000000000000111 };

@@ -19,7 +19,7 @@ public:
 	/// <summary>
 	/// Returns move distribution. The higher the assigned score in the distribution, the better the move.
 	/// </summary>
-	virtual void best_moves(const Position& position, std::vector<move_t>& moves, std::vector<double>& score, int depth) const = 0;
+	virtual void moves_distribution(const Position& position, std::vector<move_t>& moves, std::vector<double>& score, int depth) const = 0;
 
 	virtual ~Engine() { }
 };
@@ -31,7 +31,7 @@ private:
 public:
 	int evaluate(const Position& position, int depth) const override;
 
-	void best_moves(const Position& position, std::vector<move_t>& moves, std::vector<double>& scores, int depth) const override;
+	void moves_distribution(const Position& position, std::vector<move_t>& moves, std::vector<double>& scores, int depth) const override;
 
 private:
 	/// <summary>

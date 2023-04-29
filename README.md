@@ -56,10 +56,10 @@
 
    - `engine eval 4`
 
-1. `best_moves`
+1. `moves_eval`
 
    - Returns normalized moves distribution in current position for given depth.
-   - `engine best_moves 4`
+   - `engine moves_eval 4`
 
 1. `play_best`
 
